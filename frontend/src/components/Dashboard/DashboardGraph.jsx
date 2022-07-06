@@ -56,25 +56,25 @@ const DashboardGraph = () => {
       </Stat>
       <ResponsiveContainer width={'99%'} height={250}>
         <LineChart
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray="9 9" />
-        <XAxis dataKey='date' />
-        <YAxis />
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="cost"
-          stroke="#63b3ed"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5
+          }}
+        >
+          <CartesianGrid strokeDasharray="9 9" />
+          <XAxis dataKey='date' />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="cost"
+            stroke="#63b3ed"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
       </ResponsiveContainer>
     </Box>
   );

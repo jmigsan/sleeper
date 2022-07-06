@@ -5,6 +5,7 @@ import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
 import Invest from './pages/Invest';
+import SleeperStats from './pages/SleeperStats';
 
 import NavBar from './components/All/NavBar';
 
@@ -18,6 +19,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/invest" element={<Invest />} />
+        <Route path="sleeper">
+          <Route path=":sleeperId" element={<SleeperStats />} />
+        </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
