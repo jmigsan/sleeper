@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/icons';
 
 import '@fontsource/catamaran/900.css'
-import '@fontsource/open-sans/400.css'
+import '@fontsource/open-sans/500.css'
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
