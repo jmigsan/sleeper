@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Image,
+  Center,
 } from '@chakra-ui/react';
 
 const Landing = () => {
@@ -21,7 +22,7 @@ const Landing = () => {
           fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
           lineHeight={'110%'}>
           Meeting scheduling{' '}
-          <Text as={'span'} color={'orange.400'}>
+          <Text as={'span'} color={'blue.400'}>
             made easy
           </Text>
         </Heading>
@@ -34,17 +35,19 @@ const Landing = () => {
           <Button
             rounded={'full'}
             px={6}
-            colorScheme={'orange'}
-            bg={'orange.400'}
-            _hover={{ bg: 'orange.500' }}>
+            colorScheme={'green'}
+            bg={'blue.400'}
+            _hover={{ bg: 'blue.500' }}>
             Get started
           </Button>
           <Button rounded={'full'} px={6}>
             Learn more
           </Button>
         </Stack>
-        <Flex w={'full'}>
-          <Image src='https://images.unsplash.com/photo-1494253109108-2e30c049369b' />
+        <Flex>
+          <Center>
+            <Image w={'2xl'} src='https://images.unsplash.com/photo-1601230202587-1b3f0286c1b7' />
+          </Center>
         </Flex>
       </Stack>
     </Container>

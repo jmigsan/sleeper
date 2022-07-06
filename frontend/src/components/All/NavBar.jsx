@@ -14,12 +14,12 @@ import {
   useDisclosure,
   Stack,
   Heading,
+  Text,
 } from '@chakra-ui/react';
 
 import {
   HamburgerIcon,
   CloseIcon,
-  ChevronDownIcon,
 } from '@chakra-ui/icons';
 
 import '@fontsource/catamaran/900.css'
@@ -29,8 +29,8 @@ const Links = ['Dashboard', 'Projects', 'Team'];
 
 const NavLink = ({ children }) => (
   <Link
-    px={2}
-    py={1}
+    px={3}
+    py={2}
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
@@ -46,7 +46,7 @@ export default function Simple() {
 
   return (
     <>
-      <Box bg={'cyan.200'} px={4}>
+      <Box bg={'blue.300'} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -56,7 +56,7 @@ export default function Simple() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'}>
-            <Box><Heading>sleeper</Heading></Box>
+            <Heading>sleeper</Heading>
             <HStack
               as={'nav'}
               spacing={4}
@@ -68,14 +68,26 @@ export default function Simple() {
           </HStack>
           <Flex alignItems={'center'}>
             <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              Sign In
+            <MenuButton 
+              as={Button}
+              bg={'white'}
+              _hover={{ bg: 'gray.100' }}
+              _expanded={{ bg: 'gray.100' }}
+              >
+            <HStack spacing='3' py='1'>
+              <Text>
+                Sign In
+              </Text>
+              <Avatar
+                  size={'sm'}
+                  src={''}
+                />
+              </HStack>
             </MenuButton>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <MenuItem>Sign in</MenuItem>
                 <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem>Sign up</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
