@@ -1,15 +1,24 @@
 import { 
   Box,
-  Heading
+  Heading,
+  Text
 } from '@chakra-ui/react'
+
+import { ArrowForwardIcon } from '@chakra-ui/icons'
 
 const DashboardPortfolio = () => {
   return (
-    <Box>
-      <Heading>
+    <div>
+      <Heading size='lg'>
         Portfolio
       </Heading>
-    </Box>
+      <div>
+        <Text>See more <span> <ArrowForwardIcon /> </span> </Text>
+      </div>
+      <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'}>
+        yo
+      </Box>
+    </div>
   )
 }
 export default DashboardPortfolio
