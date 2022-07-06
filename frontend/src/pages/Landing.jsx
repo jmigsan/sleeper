@@ -21,15 +21,13 @@ const Landing = () => {
           fontWeight={600}
           fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
           lineHeight={'110%'}>
-          Meeting scheduling{' '}
+          Stock market where you bet{' '}
           <Text as={'span'} color={'blue.400'}>
-            made easy
+            if someone will sleep early or not
           </Text>
         </Heading>
         <Text color={'gray.500'} maxW={'3xl'}>
-          Never miss a meeting. Never be late for one too. Keep track of your
-          meetings and receive smart reminders in appropriate times. Read your
-          smart “Daily Agenda” every morning.
+          Are they gonna sleep early? Are the gonna sleep late? Are they gonna do it consistently? Are they sleep deprived? 
         </Text>
         <Stack spacing={6} direction={'row'}>
           <Button
