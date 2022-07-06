@@ -1,10 +1,17 @@
-import { ChakraProvider, Text } from '@chakra-ui/react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Landing from './pages/Landing';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
   return (
-    <ChakraProvider>
-      <Text>yo</Text>
-    </ChakraProvider>
+    
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
