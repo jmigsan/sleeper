@@ -54,6 +54,9 @@ export default function Simple() {
             aria-label={'Open Menu'}
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
+            bg={'white'}
+            _hover={{ bg: 'gray.100' }}
+            _expanded={{ bg: 'gray.100' }}
           />
           <HStack spacing={8} alignItems={'center'}>
             <Heading>sleeper</Heading>

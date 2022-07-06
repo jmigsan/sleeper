@@ -13,7 +13,7 @@ const DashboardPortfolio = () => {
         Portfolio
       </Heading>
       <div>
-        <Text>See more <span> <ArrowForwardIcon /> </span> </Text>
+        <Text>See more <ArrowForwardIcon /></Text>
       </div>
       <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'}>
         yo
