@@ -9,7 +9,7 @@ import { ArrowForwardIcon } from '@chakra-ui/icons'
 const DashboardInvest = () => {
   return (
     <div>
-      <Heading size='lg'>
+      <Heading as='h2' size='lg'>
         Invest
       </Heading>
       <div>

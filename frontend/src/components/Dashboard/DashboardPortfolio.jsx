@@ -9,7 +9,7 @@ import { ArrowForwardIcon } from '@chakra-ui/icons'
 const DashboardPortfolio = () => {
   return (
     <div>
-      <Heading size='lg'>
+      <Heading as='h2' size='lg'>
         Portfolio
       </Heading>
       <div>

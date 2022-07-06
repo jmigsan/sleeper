@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
+import Invest from './pages/Invest';
 
 import NavBar from './components/All/NavBar';
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/invest" element={<Invest />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

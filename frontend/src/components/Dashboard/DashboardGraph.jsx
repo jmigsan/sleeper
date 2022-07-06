@@ -49,7 +49,7 @@ const DashboardGraph = () => {
     <Box>
       <Stat p={5}>
         <StatLabel>
-          <Heading size='lg'>Balance</Heading>
+          <Heading as='h2' size='lg'>Balance</Heading>
         </StatLabel>
         <StatNumber>£13.52</StatNumber>
         <StatHelpText>Feb 12 - Feb 28</StatHelpText>
