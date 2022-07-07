@@ -17,6 +17,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { Link as RouterLink } from 'react-router-dom';
+
 import {
   HamburgerIcon,
   CloseIcon,
@@ -25,9 +27,7 @@ import {
 import '@fontsource/catamaran/900.css'
 import '@fontsource/open-sans/500.css'
 
-const Links = ['Dashboard', 'Projects', 'Team'];
-
-const NavLink = ({ children }) => (
+const NavLink = (props) => (
   <Link
     px={3}
     py={2}
@@ -36,8 +36,20 @@ const NavLink = ({ children }) => (
       textDecoration: 'none',
       bg: 'white',
     }}
-    href={'#'}>
-    {children}
+    to={`/${props.link}`}
+    as={RouterLink}>
+    {props.text}
+  </Link>
+);
+
+const TitleLink = () => (
+  <Link
+    _hover={{
+      textDecoration: 'none',
+    }}
+    to={`/`}
+    as={RouterLink}>
+    <Heading>sleeper</Heading>
   </Link>
 );
 
@@ -59,14 +71,14 @@ export default function Simple() {
             _expanded={{ bg: 'gray.100' }}
           />
           <HStack spacing={8} alignItems={'center'}>
-            <Heading>sleeper</Heading>
+            <TitleLink />
             <HStack
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
+              <NavLink link='dashboard' text='Dashboard'>Dashboard</NavLink>
+              <NavLink link='portfolio' text='Portfolio'>Portfolio</NavLink>
+              <NavLink link='invest' text='Invest'>Invest</NavLink>
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
@@ -99,9 +111,9 @@ export default function Simple() {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
+              <NavLink link='dashboard' text='Dashboard'>Dashboard</NavLink>
+              <NavLink link='portfolio' text='Portfolio'>Portfolio</NavLink>
+              <NavLink link='invest' text='Invest'>Invest</NavLink>
             </Stack>
           </Box>
         ) : null}

@@ -14,7 +14,7 @@ import { ArrowForwardIcon } from '@chakra-ui/icons'
 const Portfolio = () => {
   return (
     <Container maxW={'5xl'} p={4}>
-      <Heading as='h1' size='2xl' pb={6}>
+      <Heading as='h1' pt={3} size='2xl' pb={8}>
         Invest
       </Heading>
 

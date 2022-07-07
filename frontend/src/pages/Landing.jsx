@@ -44,7 +44,7 @@ const Landing = () => {
         </Stack>
         <Flex>
           <Center>
-            <Image w={'2xl'} src='https://images.unsplash.com/photo-1601230202587-1b3f0286c1b7' />
+            <Image w={'xl'} src='https://images.unsplash.com/photo-1601230202587-1b3f0286c1b7' />
           </Center>
         </Flex>
       </Stack>

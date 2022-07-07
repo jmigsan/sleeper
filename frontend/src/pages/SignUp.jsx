@@ -3,11 +3,11 @@ import {
   Heading,
 } from '@chakra-ui/react'
 
-const Portfolio = () => {
+const SignUp = () => {
   return (
     <Container maxW={'5xl'} p={4}>
       <Heading as='h1' pt={3} size='2xl'>
-        Portfolio
+        Sign Up
       </Heading>
 
       
@@ -16,4 +16,4 @@ const Portfolio = () => {
   )
 };
 
-export default Portfolio
+export default SignUp
