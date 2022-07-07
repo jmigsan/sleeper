@@ -60,11 +60,7 @@ const AccountLinks = (props) => (
     }}
     to={`/${props.link}`}
     as={RouterLink}>
-
-    <MenuItem>
-      {props.text}
-    </MenuItem>
-    
+    <MenuItem>{props.text}</MenuItem>
   </Link>
 );
 
