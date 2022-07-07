@@ -53,6 +53,21 @@ const TitleLink = () => (
   </Link>
 );
 
+const AccountLinks = (props) => (
+  <Link
+    _hover={{
+      textDecoration: 'none',
+    }}
+    to={`/${props.link}`}
+    as={RouterLink}>
+
+    <MenuItem>
+      {props.text}
+    </MenuItem>
+    
+  </Link>
+);
+
 export default function Simple() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -79,6 +94,7 @@ export default function Simple() {
               <NavLink link='dashboard' text='Dashboard'>Dashboard</NavLink>
               <NavLink link='portfolio' text='Portfolio'>Portfolio</NavLink>
               <NavLink link='invest' text='Invest'>Invest</NavLink>
+              
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
@@ -100,9 +116,9 @@ export default function Simple() {
               </HStack>
             </MenuButton>
               <MenuList>
-                <MenuItem>Sign in</MenuItem>
+                <AccountLinks text='Sign In' link='signin' />
                 <MenuDivider />
-                <MenuItem>Sign up</MenuItem>
+                <AccountLinks text='Sign Up' link='signup' />
               </MenuList>
             </Menu>
           </Flex>
