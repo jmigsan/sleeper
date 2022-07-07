@@ -16,7 +16,7 @@ const DashboardInvest = () => {
         Invest
       </Heading>
       <Link as={RouterLink} to='/invest'>
-        <Text>See more <ArrowForwardIcon /></Text>
+        <Text>View sleepers <ArrowForwardIcon /></Text>
       </Link>
       <Box boxShadow='base' rounded='md' bg='white' area={'invest'}>
         yo

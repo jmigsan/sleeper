@@ -16,7 +16,7 @@ const DashboardPortfolio = () => {
         Portfolio
       </Heading>
       <Link as={RouterLink} to='/portfolio'>
-        <Text>See more <ArrowForwardIcon /></Text>
+        <Text>View portfolio <ArrowForwardIcon /></Text>
       </Link>
       <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'}>
         yo
