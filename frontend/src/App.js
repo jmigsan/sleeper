@@ -22,6 +22,7 @@ function App() {
         <Route path="/invest" element={<Invest />} />
         <Route path="sleeper">
           <Route path=":sleeperId" element={<SleeperStats />} />
+          <Route path="" element={<ErrorPage />} />
         </Route>
         <Route path="/signin" element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
