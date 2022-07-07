@@ -87,10 +87,10 @@ export default function Simple() {
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
-              <NavLink link='dashboard' text='Dashboard'>Dashboard</NavLink>
-              <NavLink link='portfolio' text='Portfolio'>Portfolio</NavLink>
-              <NavLink link='invest' text='Invest'>Invest</NavLink>
-              
+              <NavLink link='sleeperlogs' text='Your Logs'/>
+              <NavLink link='dashboard' text='Dashboard'/>
+              <NavLink link='portfolio' text='Portfolio'/>
+              <NavLink link='invest' text='Invest'/>
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>

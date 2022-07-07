@@ -8,6 +8,7 @@ import Invest from './pages/Invest';
 import SleeperStats from './pages/SleeperStats';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import SleeperLogs from './pages/SleeperLogs';
 
 import NavBar from './components/All/NavBar';
 
@@ -26,6 +27,7 @@ function App() {
         </Route>
         <Route path="/signin" element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
+        <Route path='/sleeperlogs' element={<SleeperLogs />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
