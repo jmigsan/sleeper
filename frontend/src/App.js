@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Landing from './pages/Landing';
 import ErrorPage from './pages/ErrorPage';
@@ -12,7 +12,16 @@ import SleeperLogs from './pages/SleeperLogs';
 
 import NavBar from './components/All/NavBar';
 
+//firebase things
+import firebaseApp from './firebaseInit'
+import { getAuth } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+const auth = getAuth(firebaseApp);
+
 function App() {
+  //firebase things
+  const [user] = useAuthState(auth);
+
   return (
     <BrowserRouter>
       <NavBar />
@@ -25,8 +34,26 @@ function App() {
           <Route path=":sleeperId" element={<SleeperStats />} />
           <Route path="" element={<ErrorPage />} />
         </Route>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
+        <Route
+          path="/signin"
+          element={
+            user ? (
+              <Navigate replace to="/dashboard" />
+            ) : (
+              <SignIn />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            user ? (
+              <Navigate replace to="/dashboard" />
+            ) : (
+              <SignUp />
+            )
+          }
+        />
         <Route path='/sleeperlogs' element={<SleeperLogs />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>

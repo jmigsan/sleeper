@@ -30,6 +30,14 @@ const SStatsStats = () => {
             <Td>Volume</Td>
             <Td>18734</Td>
           </Tr>
+          <Tr>
+            <Td>Today's Sleep Hours</Td>
+            <Td>7.6</Td>
+          </Tr>
+          <Tr>
+            <Td>Past Week Sleep Hours</Td>
+            <Td>53.2</Td>
+          </Tr>
         </Tbody>
       </Table>
     </TableContainer>

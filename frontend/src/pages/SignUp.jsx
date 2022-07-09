@@ -5,7 +5,6 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
@@ -18,8 +17,50 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 import { Link as RouterLink } from 'react-router-dom';
 
+// firebase things
+import firebaseApp from '../firebaseInit';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuthState } from 'react-firebase-hooks/auth';
+const auth = getAuth(firebaseApp);
+
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // firebase things
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, loading, error] = useAuthState(auth);
+
+  const createSleeperUser = async () => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = await userCredential.user
+    }
+    catch (err) {
+      const errorMessage = err.message;
+      setErrorMsg(errorMessage.slice(10))
+    }
+  };
+
+  const SignUpError = () => {
+    if (errorMsg !== '') {
+      return (
+        <Text color='red'>{errorMsg}</Text>
+      );
+    } else {
+      return (
+        <>
+        </>
+      );
+    }
+  }
+
+  if (user) {
+    return (
+      <Text>You are already signed in!</Text>
+    )
+  };
 
   return (
     <Flex
@@ -40,28 +81,20 @@ const SignUp = () => {
           boxShadow={'base'}
           p={8}>
           <Stack spacing={4}>
-            <HStack>
-              <Box>
-                <FormControl id="firstName" isRequired>
-                  <FormLabel>First Name</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-              </Box>
-              <Box>
-                <FormControl id="lastName">
-                  <FormLabel>Last Name</FormLabel>
-                  <Input type="text" />
-                </FormControl>
-              </Box>
-            </HStack>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} />
+                <Input 
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -81,9 +114,13 @@ const SignUp = () => {
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
-                }}>
+                }}
+                onClick={() => 
+                  createSleeperUser()
+                }>
                 Sign up
               </Button>
+              <SignUpError />
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
@@ -98,3 +135,4 @@ const SignUp = () => {
 }
 
 export default SignUp
+

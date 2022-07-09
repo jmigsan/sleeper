@@ -1,20 +1,12 @@
 import {
   Box,
   Flex,
-  Avatar,
   HStack,
   Link,
   IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useDisclosure,
   Stack,
   Heading,
-  Text,
 } from '@chakra-ui/react';
 
 import { Link as RouterLink } from 'react-router-dom';
@@ -26,6 +18,8 @@ import {
 
 import '@fontsource/catamaran/900.css'
 import '@fontsource/open-sans/500.css'
+
+import NavBarSignIn from './NavBar/NavBarSignIn';
 
 const NavLink = (props) => (
   <Link
@@ -50,17 +44,6 @@ const TitleLink = () => (
     to={`/`}
     as={RouterLink}>
     <Heading>sleeper</Heading>
-  </Link>
-);
-
-const AccountLinks = (props) => (
-  <Link
-    _hover={{
-      textDecoration: 'none',
-    }}
-    to={`/${props.link}`}
-    as={RouterLink}>
-    <MenuItem>{props.text}</MenuItem>
   </Link>
 );
 
@@ -93,31 +76,7 @@ export default function Simple() {
               <NavLink link='invest' text='Invest'/>
             </HStack>
           </HStack>
-          <Flex alignItems={'center'}>
-            <Menu>
-            <MenuButton 
-              as={Button}
-              bg={'white'}
-              _hover={{ bg: 'gray.100' }}
-              _expanded={{ bg: 'gray.100' }}
-              >
-            <HStack spacing='3' py='1'>
-              <Text>
-                Sign In
-              </Text>
-              <Avatar
-                  size={'sm'}
-                  src={''}
-                />
-              </HStack>
-            </MenuButton>
-              <MenuList>
-                <AccountLinks text='Sign In' link='signin' />
-                <MenuDivider />
-                <AccountLinks text='Sign Up' link='signup' />
-              </MenuList>
-            </Menu>
-          </Flex>
+          <NavBarSignIn />
         </Flex>
 
         {isOpen ? (
