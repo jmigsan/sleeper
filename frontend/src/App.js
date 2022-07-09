@@ -27,6 +27,16 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route
+          path="/sleeperlogs"
+          element={
+            !user ? (
+              <Navigate replace to="/signin" />
+            ) : (
+              <SleeperLogs />
+            )
+          }
+        />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/invest" element={<Invest />} />
@@ -54,7 +64,6 @@ function App() {
             )
           }
         />
-        <Route path='/sleeperlogs' element={<SleeperLogs />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
