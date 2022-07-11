@@ -35,11 +35,15 @@ const data = [
   },
 ];
 
-const SLogsGraph1 = () => {
+
+
+const SLogsGraph1 = (props) => {
+  console.log(props.sleeplogs)
+
   return (
     <ResponsiveContainer width={'99%'} height={250}>
       <LineChart
-        data={data}
+        data={props.sleeplogs}
         margin={{
           top: 5,
           right: 30,
@@ -48,12 +52,12 @@ const SLogsGraph1 = () => {
         }}
       >
         <CartesianGrid strokeDasharray="9 9" />
-        <XAxis dataKey='date' />
+        <XAxis dataKey='timestamp' />
         <YAxis />
         <Tooltip />
         <Line
           type="monotone"
-          dataKey="cost"
+          dataKey="sleepvalue"
           stroke="#63b3ed"
           activeDot={{ r: 8 }}
         />

@@ -64,6 +64,7 @@ function App() {
             )
           }
         />
+        {/* <Route path="/signup" element={<SignUp />} /> */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

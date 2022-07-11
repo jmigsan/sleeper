@@ -15,6 +15,8 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
+import axios from 'axios';
+
 import { Link as RouterLink } from 'react-router-dom';
 
 // firebase things
@@ -32,10 +34,37 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [user, loading, error] = useAuthState(auth);
 
+  const createEmptySleeperLog = async () => {
+    try {
+      let currentUserToken = await auth.currentUser.getIdToken(true);
+      let idToken = currentUserToken;
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      };
+  
+      const userUid = auth.currentUser.uid;
+      const SleepLogData = { userUid };
+  
+      //console.log(SleepLogData);
+  
+      const response = await axios.post('/api/createEmptySleepLog', SleepLogData, config);
+      //console.log(response.data);
+  
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      console.log(message);
+    };
+  };
+
   const createSleeperUser = async () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = await userCredential.user
+      const user = await userCredential.user;
+      //console.log(user.uid);
+      createEmptySleeperLog();
     }
     catch (err) {
       const errorMessage = err.message;
