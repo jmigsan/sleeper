@@ -6,6 +6,7 @@ import {
   Text,
   Box,
   Link,
+  Stack,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -18,14 +19,26 @@ const DashboardInvest = () => {
     let publicSleepers = [];
     
     sleeperData.data.forEach(async (x) => {
-      console.log(x.sleeper_id)
+      // console.log(x.sleeper_id)
       const postData = {userUid: x.sleeper_id}
       const sleeperValue = await axios.post('/api/getLastSleeperValue', postData);
-      console.log({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value });
+      // console.log({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value });
       publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value, sleeper_id: x.sleeper_id })
     });
 
     setSleepers(publicSleepers);
+  };
+
+  const getPublicSleeperInfo = async () => {
+    let publicSleepers = [];
+
+    const sleeperData = await axios.get('api/getPublicSleeperInfo')
+
+    sleeperData.forEach((x) => {
+      publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: x.sleep_value, sleeper_id: x.sleeper_id })
+    });
+    setSleepers(publicSleepers);
+
   };
 
   useEffect(() => {
@@ -36,9 +49,9 @@ const DashboardInvest = () => {
   return (
     <>
       {sleepers.length > 0 ? (
-        <div>
+        <Stack>
           {sleepers.map(x => (
-          <div key={x}>
+          <div key={x.sleeper_id}>
             <Link as={RouterLink} to={`/sleeper/${x.sleeper_id}`}>
               <Box boxShadow='base' rounded='md' p={3}>
                 <HStack>
@@ -49,9 +62,9 @@ const DashboardInvest = () => {
             </Link>
           </div>
           ))}
-        </div>
+        </Stack>
       ) 
-      : (<div>peepoSad</div>)}
+      : (<Text>No Sleepers Available</Text>)}
     </>
   )
 }

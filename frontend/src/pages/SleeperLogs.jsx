@@ -61,7 +61,6 @@ const Portfolio = () => {
       const userUid = user.uid;
       const LogData = { userUid }
 
-
       const response = await axios.post('/api/getSleepLogs', LogData, config);
 
       const resData = await response.data;
@@ -215,18 +214,23 @@ const Portfolio = () => {
           gap='5'
           >
           <GridItem area={'sleep_ask'}>
-            <Box boxShadow='base' rounded='md' p={3}>
-              <Heading as='h2' size='lg' pb={3}>Last night's statistics</Heading>
-              <Box pb={3}>
-                <Text>What time did you sleep last night (Note: 24 Hour Clock)</Text>
-                <TimePicker onChange={setSleepyTime} value={sleepyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+            <Stack>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <Heading as='h2' size='lg' pb={3}>Last night's statistics</Heading>
+                <Box pb={3}>
+                  <Text>What time did you sleep last night (Note: 24 Hour Clock)</Text>
+                  <TimePicker onChange={setSleepyTime} value={sleepyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+                </Box>
+                <Box pb={3}>
+                  <Text>What time did you wake up today? (Note: 24 Hour Clock)</Text>
+                  <TimePicker onChange={setWakeyTime} value={wakeyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+                </Box>
+                <SubmitSleepLogBtn sleepyTime={sleepyTime} wakeyTime={wakeyTime} postFunc={getLogs}/>
               </Box>
-              <Box pb={3}>
-                <Text>What time did you wake up today? (Note: 24 Hour Clock)</Text>
-                <TimePicker onChange={setWakeyTime} value={wakeyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <CheckIfTradable />
               </Box>
-              <SubmitSleepLogBtn sleepyTime={sleepyTime} wakeyTime={wakeyTime} postFunc={getLogs}/>
-            </Box>
+            </Stack>
           </GridItem>
           <GridItem area={'sleep_graph'}>
             <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>
