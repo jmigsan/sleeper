@@ -29,18 +29,6 @@ const DashboardInvest = () => {
     setSleepers(publicSleepers);
   };
 
-  const getPublicSleeperInfo = async () => {
-    let publicSleepers = [];
-
-    const sleeperData = await axios.get('api/getPublicSleeperInfo')
-
-    sleeperData.forEach((x) => {
-      publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: x.sleep_value, sleeper_id: x.sleeper_id })
-    });
-    setSleepers(publicSleepers);
-
-  };
-
   useEffect(() => {
     getPublicSleepers();
   }, [])
