@@ -6,9 +6,22 @@ import {
   GridItem,
   Box,
   Button,
+  Skeleton,
+  Stack,
 } from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TimePicker from 'react-time-picker';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Bar,
+  BarChart,
+} from "recharts";
 
 import SLogsGraph1 from '../components/SleeperLogs/SLogsGraph1';
 import SLogsGraph2 from '../components/SleeperLogs/SLogsGraph2';
@@ -30,32 +43,8 @@ const Portfolio = () => {
   const [sleepyTime, setSleepyTime] = useState('21:00');
   const [wakeyTime, setWakeyTime] = useState('07:00');
 
-  const [yourSleepLogs, setYourSleepLogs] = useState([
-    {
-      timestamp: '1/2/2022',
-      sleepvalue: 30
-    },
-    {
-      timestamp: '1/2/2022',
-      sleepvalue: 40
-    },
-    {
-      timestamp: '1/2/2022',
-      sleepvalue: 20
-    },
-    {
-      timestamp: '1/2/2022',
-      sleepvalue: 50
-    },
-    {
-      timestamp: '1/2/2022',
-      sleepvalue: 55
-    },
-    {
-      timestamp: '2/2/2022',
-      sleepvalue: 10
-    },
-  ]);
+  const [SLog1, setSLog1] = useState();
+  const [SLog2, setSLog2] = useState();
 
   const getLogs = async () => {
     try {
@@ -71,78 +60,303 @@ const Portfolio = () => {
       const userUid = user.uid;
       const LogData = { userUid }
 
+
       const response = await axios.post('/api/getSleepLogs', LogData, config);
-      // console.log(response.data);
-      
-      const yourLogs = response.data
-      // console.log(yourLogs);
 
-      const newLogData = [];
+      const resData = await response.data;
 
-      yourLogs.forEach((x) => {
-        const timestampOG = x.log_timestamp;
-        const timestamp = timestampOG.substring(0, 10);
-
-        console.log(timestamp);
-
-        const sleepvalue = x.sleep_value;
-
-        const newLogObject = { timestamp, sleepvalue };
-
-        // newLogData.unshift(newLogObject);
+      const updatedSLog1 = [];
+      resData.forEach((x) => {
+        const logData = {
+          'Date': x.log_date,
+          'Sleep Value': x.sleep_value
+        }
+        updatedSLog1.push(logData);
       });
+      setSLog1(updatedSLog1);
 
-      // setYourSleepLogs(newLogData);
+      const updatedSLog2 = [];
+      resData.forEach((x) => {
+        const hours_slept = (x.minutes_slept) / 60;
+
+        const logData = {
+          'Date': x.log_date,
+          'Hours Slept': hours_slept
+        }
+        updatedSLog2.push(logData);
+      });
+      setSLog2(updatedSLog2);
 
     } catch (error) {
       console.log(error);
     };
   };
 
-  return (
-    <Container maxW={'5xl'} p={4}>
-      <Heading as='h1' pt={3} size='2xl' pb={8}>
-        {user.email}'s Sleep Logs
-      </Heading>
+  useEffect(() => {
+    getLogs();
+  }, [])
 
-      <Grid
-        templateAreas={{base:`'sleep_ask' 
-                              'sleep_graph'
-                              'sleep_hours'`,
+  const now = new Date();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = months[now.getMonth()];
+  const nowDate = `${now.getDate()} ${month} ${now.getFullYear()}`; //10 Jul 2022
 
-                        md: `"sleep_ask sleep_graph" 
-                             "sleep_ask sleep_hours"`}}
-
-        gridTemplateRows={'auto'}
-        gridTemplateColumns={'auto'}
-        gap='5'
-        >
-        <GridItem area={'sleep_ask'}>
-          <Box boxShadow='base' rounded='md' p={3}>
-            <Heading as='h2' size='lg' pb={3}>Last night's statistics</Heading>
-            <Box pb={3}>
-              <Text>What time did you sleep last night (Note: 24 Hour Clock)</Text>
-              <TimePicker onChange={setSleepyTime} value={sleepyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+  let lastDate = 'loading';
+  try {
+    lastDate = SLog1[SLog1.length - 1].Date;
+  }
+  catch {
+    lastDate = 'loading';
+  };
+  
+  if (lastDate == 'loading') {
+    return (
+      <Container maxW={'5xl'} p={4}>
+        <Heading as='h1' pt={3} size='2xl' pb={8}>
+          {user.email}'s Sleep Logs
+        </Heading>
+  
+        <Grid
+          templateAreas={{base:`'sleep_ask' 
+                                'sleep_graph'
+                                'sleep_hours'`,
+  
+                          md: `"sleep_ask sleep_graph" 
+                               "sleep_ask sleep_hours"`}}
+  
+          gridTemplateRows={'auto'}
+          gridTemplateColumns={'auto'}
+          gap='5'
+          >
+          <GridItem area={'sleep_ask'}>
+            <Box boxShadow='base' rounded='md' p={3}>
+            <Stack>
+              <Skeleton height='29px'>
+                <Text>What time did you sleep last night (Note: 24 Hour Clock)</Text>
+              </Skeleton>
+              <Skeleton height='29px' />
+              <Skeleton height='29px' />
+              <Skeleton height='29px' />
+              <Skeleton height='29px' />
+              <Skeleton height='29px' />
+            </Stack>
             </Box>
-            <Box pb={3}>
-              <Text>What time did you wake up today? (Note: 24 Hour Clock)</Text>
-              <TimePicker onChange={setWakeyTime} value={wakeyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+          </GridItem>
+          <GridItem area={'sleep_graph'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <LineChart
+                data={SLog1}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="Sleep Value"
+                  stroke="#63b3ed"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+            {/* <Button onClick={ () => getLogs() }>update</Button> */}
+          </GridItem>
+          <GridItem area={'sleep_hours'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Hours</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <BarChart
+                width={500}
+                height={300}
+                data={SLog2}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="Hours Slept" fill="#63b3ed" />
+              </BarChart>
+            </ResponsiveContainer>
+          </GridItem>
+        </Grid>
+      </Container>
+    )
+  }
+  if (lastDate !== nowDate) {
+    return (
+      <Container maxW={'5xl'} p={4}>
+        <Heading as='h1' pt={3} size='2xl' pb={8}>
+          {user.email}'s Sleep Logs
+        </Heading>
+  
+        <Grid
+          templateAreas={{base:`'sleep_ask' 
+                                'sleep_graph'
+                                'sleep_hours'`,
+  
+                          md: `"sleep_ask sleep_graph" 
+                               "sleep_ask sleep_hours"`}}
+  
+          gridTemplateRows={'auto'}
+          gridTemplateColumns={'auto'}
+          gap='5'
+          >
+          <GridItem area={'sleep_ask'}>
+            <Box boxShadow='base' rounded='md' p={3}>
+              <Heading as='h2' size='lg' pb={3}>Last night's statistics</Heading>
+              <Box pb={3}>
+                <Text>What time did you sleep last night (Note: 24 Hour Clock)</Text>
+                <TimePicker onChange={setSleepyTime} value={sleepyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+              </Box>
+              <Box pb={3}>
+                <Text>What time did you wake up today? (Note: 24 Hour Clock)</Text>
+                <TimePicker onChange={setWakeyTime} value={wakeyTime} clockIcon={null} required={true} format={'HH:mm'}/>
+              </Box>
+              <SubmitSleepLogBtn sleepyTime={sleepyTime} wakeyTime={wakeyTime} postFunc={getLogs}/>
             </Box>
-            <SubmitSleepLogBtn sleepyTime={sleepyTime} wakeyTime={wakeyTime}/>
-          </Box>
-        </GridItem>
-        <GridItem area={'sleep_graph'}>
-          <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>
-          <SLogsGraph1 sleepLogs={'yourSleepLogs'}/>
-          <Button onClick={ () => getLogs() }>yo</Button>
-        </GridItem>
-        <GridItem area={'sleep_hours'}>
-          <Heading as='h3' size='md' pb={3}>Sleep Hours</Heading>
-          <SLogsGraph2/>
-        </GridItem>
-      </Grid>
-    </Container>
-  )
+          </GridItem>
+          <GridItem area={'sleep_graph'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <LineChart
+                data={SLog1}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="Sleep Value"
+                  stroke="#63b3ed"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+            {/* <Button onClick={ () => getLogs() }>update</Button> */}
+          </GridItem>
+          <GridItem area={'sleep_hours'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Hours</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <BarChart
+                width={500}
+                height={300}
+                data={SLog2}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="Hours Slept" fill="#63b3ed" />
+              </BarChart>
+            </ResponsiveContainer>
+          </GridItem>
+        </Grid>
+      </Container>
+    )
+  }
+  if (lastDate == nowDate) {
+    return (
+      <Container maxW={'5xl'} p={4}>
+        <Heading as='h1' pt={3} size='2xl' pb={8}>
+          {user.email}'s Sleep Logs
+        </Heading>
+  
+        <Grid
+          templateAreas={{base:`'sleep_ask' 
+                                'sleep_graph'
+                                'sleep_hours'`,
+  
+                          md: `"sleep_ask sleep_graph" 
+                               "sleep_ask sleep_hours"`}}
+  
+          gridTemplateRows={'auto'}
+          gridTemplateColumns={'auto'}
+          gap='5'
+          >
+          <GridItem area={'sleep_ask'}>
+            <Box boxShadow='base' rounded='md' p={3}>
+              <Heading as='h2' size='lg'>You've already logged today.</Heading>
+            </Box>
+          </GridItem>
+          <GridItem area={'sleep_graph'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <LineChart
+                data={SLog1}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="Sleep Value"
+                  stroke="#63b3ed"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+            {/* <Button onClick={ () => getLogs() }>update</Button> */}
+          </GridItem>
+          <GridItem area={'sleep_hours'}>
+            <Heading as='h3' size='md' pb={3}>Sleep Hours</Heading>
+            <ResponsiveContainer width={'99%'} height={250}>
+              <BarChart
+                width={500}
+                height={300}
+                data={SLog2}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="9 9" />
+                <XAxis dataKey='Date' />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="Hours Slept" fill="#63b3ed" />
+              </BarChart>
+            </ResponsiveContainer>
+          </GridItem>
+        </Grid>
+      </Container>
+    )
+  }
+
+  
 };
 
 export default Portfolio

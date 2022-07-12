@@ -5,7 +5,8 @@ create table all_sleeper_logs (
 	sleep_time time,
 	awake_time time,
 	minutes_slept smallint,
-	sleep_value real
+	sleep_value real,
+	sleep_date VARCHAR(11)
 );
 
 create table all_sleepers (

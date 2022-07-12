@@ -38,7 +38,6 @@ const data = [
 
 
 const SLogsGraph1 = (props) => {
-  console.log(props.sleeplogs)
 
   return (
     <ResponsiveContainer width={'99%'} height={250}>

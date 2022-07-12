@@ -37,7 +37,7 @@ const data = [
 
 const SLogsGraph2 = () => {
   return (
-    <ResponsiveContainer width={'99%'} height={250}>
+  <ResponsiveContainer width={'99%'} height={250}>
     <BarChart
       width={500}
       height={300}

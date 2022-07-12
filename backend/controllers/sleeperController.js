@@ -18,8 +18,14 @@ const test2 = asyncHandler(async (req, res) => {
   console.log('yo')
 
   try {
-    const poggies = req.body.sleepyTime + ' ' + req.body.wakeyTime + ' bro';
-    res.status(200).json(poggies);
+    const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", ['r1QsxmVwPzXq9aD4Ku5xUbZQWme2']);
+    if (latest_sleep_value.rowCount !== 0) {
+      res.status(200).json(latest_sleep_value);
+    }
+    if (latest_sleep_value.rowCount == 0) {
+      res.status(200).json(latest_sleep_value);
+    }
+    
   } 
   
   catch (err) {
@@ -76,16 +82,21 @@ const createSleepLog = asyncHandler(async (req, res) => {
 
     }
 
+    let sleep_value = 0;
+
     const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [req.body.userUid]);
-    const sv_data = latest_sleep_value.rows[0];
-    // console.log(sv_data);
-    const sv_data_value = sv_data.sleep_value;
-    // console.log(sv_data_value);
-    const float_sleep_value = parseFloat(sv_data_value)
-    const sleep_value = 1.23 + float_sleep_value;
-    // console.log(sleep_value);
+    if (latest_sleep_value.rowCount !== 0) {
+      const sv_data = latest_sleep_value.rows[0];
+      const sv_data_value = sv_data.sleep_value;
+      const float_sleep_value = parseFloat(sv_data_value)
+      sleep_value = 1.23 + float_sleep_value;
+    }
+    if (latest_sleep_value.rowCount == 0) {
+      const float_sleep_value = parseFloat(0.0);
+      sleep_value = 1.23 + float_sleep_value;
+    }    
     
-    const new_sleep_log = await pool.query("INSERT INTO all_sleeper_logs (log_id, log_timestamp, sleeper_id, sleep_time, awake_time, minutes_slept, sleep_value) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", [log_id, log_timestamp, req.body.userUid, req.body.sleepyTime, req.body.wakeyTime, mins_slept, sleep_value]);
+    const new_sleep_log = await pool.query("INSERT INTO all_sleeper_logs (log_id, log_timestamp, sleeper_id, sleep_time, awake_time, minutes_slept, sleep_value, log_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [log_id, log_timestamp, req.body.userUid, req.body.sleepyTime, req.body.wakeyTime, mins_slept, sleep_value, req.body.wakeyDate]);
     res.status(200).json(new_sleep_log);
   } 
   
@@ -96,32 +107,12 @@ const createSleepLog = asyncHandler(async (req, res) => {
 
 });
 
-const createEmptySleepLog = asyncHandler(async (req, res) => {
-  try {
-    const log_id = uuidv4();
-
-    const now = new Date();
-		const nowUTC = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-		const log_timestamp = nowUTC.toISOString();
-
-    const sleep_value = 0.0;
-
-    const new_sleep_log = await pool.query("INSERT INTO all_sleeper_logs (log_id, log_timestamp, sleeper_id, sleep_value) VALUES($1, $2, $3, $4) RETURNING *", [log_id, log_timestamp, req.body.userUid, sleep_value]);
-    res.status(200).json(new_sleep_log);
-  } 
-  
-  catch (err) {
-    throw new Error(err);
-  }
-
-});
-
 const getSleepLogs = asyncHandler(async (req, res) => {
   // console.log('yo');
   // console.log(req.body.userUid)
 
   try {
-    const allLogs = await pool.query("SELECT * FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC", [req.body.userUid]);
+    const allLogs = await pool.query("SELECT * FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp ASC", [req.body.userUid]);
     res.status(200).json(allLogs.rows);
   } 
   
@@ -171,7 +162,6 @@ module.exports = {
   test,
   test2,
   createSleepLog,
-  createEmptySleepLog,
   getSleepLogs,
   snapshotAllPortfolios,
 };
