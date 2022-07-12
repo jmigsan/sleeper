@@ -190,7 +190,7 @@ const getLastSleeperValue = asyncHandler(async (req, res) => {
 const getPublicSleeperInfo = asyncHandler(async (req, res) => {
 
   try {
-    const publicSleepers = await pool.query("SELECT * FROM all_sleepers WHERE publicly_tradable = TRUE");
+    const publicSleepers = await pool.query("SELECT * FROM (SELECT ROW_NUMBER() OVER(PARTITION BY all_sleepers.sleeper_id) rn, all_sleepers.sleeper_name, all_sleepers.publicly_tradable, all_sleeper_logs.sleep_value, all_sleeper_logs.log_timestamp FROM all_sleepers INNER JOIN all_sleeper_logs ON all_sleepers.sleeper_id=all_sleeper_logs.sleeper_id ORDER BY log_timestamp DESC) a WHERE rn = 1");
     res.status(200).json(publicSleepers.rows);
   } 
   
