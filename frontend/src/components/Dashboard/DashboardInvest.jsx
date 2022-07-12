@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   HStack,
   Text,
   Box,
   Link,
   Stack,
+  Skeleton,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -16,17 +16,15 @@ const DashboardInvest = () => {
   const getPublicSleepers = async () => {
     const sleeperData = await axios.get('/api/getPublicSleepers');
 
-    let publicSleepers = [];
+    // let publicSleepers = [];
     
-    sleeperData.data.forEach(async (x) => {
-      // console.log(x.sleeper_id)
-      const postData = {userUid: x.sleeper_id}
-      const sleeperValue = await axios.post('/api/getLastSleeperValue', postData);
-      // console.log({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value });
-      publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value, sleeper_id: x.sleeper_id })
-    });
+    // sleeperData.data.forEach(async (x) => {
+    //   const postData = {userUid: x.sleeper_id}
+    //   const sleeperValue = await axios.post('/api/getLastSleeperValue', postData);
+    //   publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value, sleeper_id: x.sleeper_id })
+    // });
 
-    setSleepers(publicSleepers);
+    setSleepers(sleeperData.data);
   };
 
   useEffect(() => {
@@ -52,7 +50,11 @@ const DashboardInvest = () => {
           ))}
         </Stack>
       ) 
-      : (<Text>No Sleepers Available</Text>)}
+      : (<Stack>
+          <Skeleton height='20px' />
+          <Skeleton height='20px' />
+          <Skeleton height='20px' />
+        </Stack>)}
     </>
   )
 }

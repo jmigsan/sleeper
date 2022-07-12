@@ -17,6 +17,7 @@ import DashboardPortfolio from '../components/Dashboard/DashboardPortfolio';
 import DashboardInvest from '../components/Dashboard/DashboardInvest';
 
 const Dashboard = () => {
+  
   return (
     <Container maxW={'5xl'} p={4}>
       <Grid
@@ -37,9 +38,11 @@ const Dashboard = () => {
         <Heading as='h2' size='lg'>
           Invest
         </Heading>
-        <Link as={RouterLink} to='/invest'>
-          <Text>View sleepers <ArrowForwardIcon /></Text>
-        </Link>
+        <Box pb={1}>
+          <Link as={RouterLink} to='/invest'>
+            <Text>View sleepers <ArrowForwardIcon /></Text>
+          </Link>
+        </Box>
         <Box boxShadow='base' rounded='md' bg='white' area={'invest'} p={3}>
           <DashboardInvest />
         </Box>
