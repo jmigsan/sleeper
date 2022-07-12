@@ -200,6 +200,19 @@ const initSleeper = asyncHandler(async (req, res) => {
 
 });
 
+const getPublicSleepersInfo = asyncHandler(async (req, res) => {
+
+  try {
+    const publicSleepersInfo = await pool.query("SELECT * FROM (SELECT all_sleepers.sleeper_id, all_sleepers.sleeper_name, all_sleepers.publicly_tradable, all_sleeper_logs.sleep_value, all_sleeper_logs.log_timestamp, ROW_NUMBER() OVER(PARTITION BY all_sleepers.sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn FROM all_sleepers INNER JOIN all_sleeper_logs ON all_sleepers.sleeper_id=all_sleeper_logs.sleeper_id) a WHERE rn = 1");
+    res.status(200).json(publicSleepersInfo.rows);
+  }
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
 const snapshotAllPortfolios = asyncHandler( async (req, res) => {
 	try {
 		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
@@ -246,5 +259,6 @@ module.exports = {
   getPublicSleepers,
   getLastSleeperValue,
   initSleeper,
+  getPublicSleepersInfo,
   snapshotAllPortfolios,
 };

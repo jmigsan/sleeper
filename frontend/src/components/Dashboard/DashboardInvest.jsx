@@ -14,16 +14,7 @@ const DashboardInvest = () => {
   const [sleepers, setSleepers] = useState([])
 
   const getPublicSleepers = async () => {
-    const sleeperData = await axios.get('/api/getPublicSleepers');
-
-    // let publicSleepers = [];
-    
-    // sleeperData.data.forEach(async (x) => {
-    //   const postData = {userUid: x.sleeper_id}
-    //   const sleeperValue = await axios.post('/api/getLastSleeperValue', postData);
-    //   publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value, sleeper_id: x.sleeper_id })
-    // });
-
+    const sleeperData = await axios.get('/api/getPublicSleepersInfo');
     setSleepers(sleeperData.data);
   };
 
@@ -42,7 +33,7 @@ const DashboardInvest = () => {
               <Box boxShadow='base' rounded='md' p={3}>
                 <HStack>
                   <Text>{x.sleeper_name}</Text>
-                  <Text>{x.sleeper_sv}</Text>
+                  <Text>{x.sleep_value}</Text>
                 </HStack>
               </Box>
             </Link>

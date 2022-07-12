@@ -19,6 +19,10 @@ import SStatsStats from '../components/SleeperStats/SStatsStats';
 const SleeperStats = () => {
   let { sleeperId } = useParams();
 
+  const getSleeperName = () => {
+    
+  };
+
   return (
     <Container maxW={'5xl'} p={4}>
       <Heading as='h1' pt={3} pb={8} size='2xl'>
