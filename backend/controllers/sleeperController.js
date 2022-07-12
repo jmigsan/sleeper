@@ -22,7 +22,7 @@ const test2 = asyncHandler(async (req, res) => {
     if (latest_sleep_value.rowCount !== 0) {
       res.status(200).json(latest_sleep_value);
     }
-    if (latest_sleep_value.rowCount == 0) {
+    if (latest_sleep_value.rowCount === 0) {
       res.status(200).json(latest_sleep_value);
     }
     
@@ -91,7 +91,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
       const float_sleep_value = parseFloat(sv_data_value)
       sleep_value = 1.23 + float_sleep_value;
     }
-    if (latest_sleep_value.rowCount == 0) {
+    if (latest_sleep_value.rowCount === 0) {
       const float_sleep_value = parseFloat(0.0);
       sleep_value = 1.23 + float_sleep_value;
     }    
@@ -113,7 +113,20 @@ const getSleepLogs = asyncHandler(async (req, res) => {
 
   try {
     const allLogs = await pool.query("SELECT * FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp ASC", [req.body.userUid]);
-    res.status(200).json(allLogs.rows);
+
+    if (allLogs.rowCount !== 0) {
+      res.status(200).json(allLogs.rows);
+    };
+
+    if (allLogs.rowCount === 0) {
+      res.status(200).json([{
+        "sleeper_id": req.body.userUid,
+        "minutes_slept": 0,
+        "sleep_value": 0,
+        "log_date": 0
+      }]);
+    }
+    
   } 
   
   catch (err) {
@@ -174,6 +187,32 @@ const getLastSleeperValue = asyncHandler(async (req, res) => {
 
 });
 
+const getPublicSleeperInfo = asyncHandler(async (req, res) => {
+
+  try {
+    const publicSleepers = await pool.query("SELECT * FROM all_sleepers WHERE publicly_tradable = TRUE");
+    res.status(200).json(publicSleepers.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
+const initSleeper = asyncHandler(async (req, res) => {
+  try {
+    const sleeperInit = await pool.query("INSERT INTO all_sleepers (sleeper_id, sleeper_name, sleeper_cash_on_hand, publicly_tradable) VALUES ($1, $2, 1000, TRUE)", [req.body.userUid, req.body.displayName]);
+    res.status(200);
+  } 
+  
+  catch (err) {
+    // console.log(err);
+    throw new Error(err);
+  }
+
+});
+
 const snapshotAllPortfolios = asyncHandler( async (req, res) => {
 	try {
 		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
@@ -219,5 +258,7 @@ module.exports = {
   changeIfUserPublic,
   getPublicSleepers,
   getLastSleeperValue,
+  getPublicSleeperInfo,
+  initSleeper,
   snapshotAllPortfolios,
 };

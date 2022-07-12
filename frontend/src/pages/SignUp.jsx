@@ -32,14 +32,31 @@ const SignUp = () => {
   // firebase things
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [user, loading, error] = useAuthState(auth);
 
+  const initialiseSleeper = async (userUid, displayName) => {
+    try {
+      const LogData = { userUid: userUid, displayName: displayName }
+      const response = await axios.post('/api/initSleeper', LogData);
+    }
+    catch(error) {
+      console.log(error);
+    };
+  }
+
   const createSleeperUser = async () => {
+    if (displayName.trim() === '') {
+      setErrorMsg('Please enter a display name')
+      return;
+    };
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = await userCredential.user;
       //console.log(user.uid);
       //createEmptySleeperLog();
+      initialiseSleeper(user.uid, displayName);
     }
     catch (err) {
       const errorMessage = err.message;
@@ -85,6 +102,13 @@ const SignUp = () => {
           boxShadow={'base'}
           p={8}>
           <Stack spacing={4}>
+            <FormControl id="displayname" isRequired>
+              <FormLabel>Display Name</FormLabel>
+              <Input 
+                type="text" 
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)} />
+            </FormControl>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
               <Input 
