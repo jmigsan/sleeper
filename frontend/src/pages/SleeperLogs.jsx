@@ -8,6 +8,8 @@ import {
   Button,
   Skeleton,
   Stack,
+  Switch,
+  HStack,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react';
 import TimePicker from 'react-time-picker';
@@ -23,9 +25,8 @@ import {
   BarChart,
 } from "recharts";
 
-import SLogsGraph1 from '../components/SleeperLogs/SLogsGraph1';
-import SLogsGraph2 from '../components/SleeperLogs/SLogsGraph2';
 import SubmitSleepLogBtn from '../components/SleeperLogs/SubmitSleepLogBtn';
+import CheckIfTradable from '../components/SleeperLogs/CheckIfTradable';
 
 import axios from 'axios';
 
@@ -109,7 +110,7 @@ const Portfolio = () => {
     lastDate = 'loading';
   };
   
-  if (lastDate == 'loading') {
+  if (lastDate === 'loading') {
     return (
       <Container maxW={'5xl'} p={4}>
         <Heading as='h1' pt={3} size='2xl' pb={8}>
@@ -279,7 +280,7 @@ const Portfolio = () => {
       </Container>
     )
   }
-  if (lastDate == nowDate) {
+  if (lastDate === nowDate) {
     return (
       <Container maxW={'5xl'} p={4}>
         <Heading as='h1' pt={3} size='2xl' pb={8}>
@@ -299,9 +300,14 @@ const Portfolio = () => {
           gap='5'
           >
           <GridItem area={'sleep_ask'}>
-            <Box boxShadow='base' rounded='md' p={3}>
-              <Heading as='h2' size='lg'>You've already logged today.</Heading>
-            </Box>
+            <Stack>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <Heading as='h2' size='lg'>You've already logged today.</Heading>
+              </Box>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <CheckIfTradable />
+              </Box>
+            </Stack>
           </GridItem>
           <GridItem area={'sleep_graph'}>
             <Heading as='h3' size='md' pb={3}>Sleep Value</Heading>

@@ -12,7 +12,8 @@ create table all_sleeper_logs (
 create table all_sleepers (
 	sleeper_id CHAR(28) primary key,
 	sleeper_name text,
-	sleeper_cash_on_hand real
+	sleeper_cash_on_hand real,
+	publicly_tradable boolean
 );
 
 create table all_sleeper_portfolios (

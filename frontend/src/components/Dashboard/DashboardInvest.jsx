@@ -1,27 +1,58 @@
-import { 
-  Box,
-  Heading,
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import {
+  HStack,
   Text,
-  Link
+  Box,
+  Link,
 } from '@chakra-ui/react'
-
 import { Link as RouterLink } from 'react-router-dom';
 
-import { ArrowForwardIcon } from '@chakra-ui/icons'
-
 const DashboardInvest = () => {
+  const [sleepers, setSleepers] = useState([])
+
+  const getPublicSleepers = async () => {
+    const sleeperData = await axios.get('/api/getPublicSleepers');
+
+    let publicSleepers = [];
+    
+    sleeperData.data.forEach(async (x) => {
+      console.log(x.sleeper_id)
+      const postData = {userUid: x.sleeper_id}
+      const sleeperValue = await axios.post('/api/getLastSleeperValue', postData);
+      console.log({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value });
+      publicSleepers.push({sleeper_name: x.sleeper_name, sleeper_sv: sleeperValue.data[0].sleep_value, sleeper_id: x.sleeper_id })
+    });
+
+    setSleepers(publicSleepers);
+  };
+
+  useEffect(() => {
+    getPublicSleepers();
+  }, [])
+  
+
   return (
-    <div>
-      <Heading as='h2' size='lg'>
-        Invest
-      </Heading>
-      <Link as={RouterLink} to='/invest'>
-        <Text>View sleepers <ArrowForwardIcon /></Text>
-      </Link>
-      <Box boxShadow='base' rounded='md' bg='white' area={'invest'}>
-        yo
-      </Box>
-    </div>
+    <>
+      {sleepers.length > 0 ? (
+        <div>
+          {sleepers.map(x => (
+          <div key={x}>
+            <Link as={RouterLink} to={`/sleeper/${x.sleeper_id}`}>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <HStack>
+                  <Text>{x.sleeper_name}</Text>
+                  <Text>{x.sleeper_sv}</Text>
+                </HStack>
+              </Box>
+            </Link>
+          </div>
+          ))}
+        </div>
+      ) 
+      : (<div>peepoSad</div>)}
+    </>
   )
 }
 export default DashboardInvest

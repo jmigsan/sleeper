@@ -122,6 +122,58 @@ const getSleepLogs = asyncHandler(async (req, res) => {
 
 });
 
+const getIfUserPublic = asyncHandler(async (req, res) => {
+
+  try {
+    const ifPublic = await pool.query("SELECT publicly_tradable FROM all_sleepers WHERE sleeper_id = $1", [req.body.userUid]);
+    res.status(200).json(ifPublic.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
+const changeIfUserPublic = asyncHandler(async (req, res) => {
+
+  try {
+    const ifPublic = await pool.query("UPDATE all_sleepers SET publicly_tradable = $1 WHERE sleeper_id = $2 RETURNING publicly_tradable", [req.body.newPublicSetting, req.body.userUid]);
+    res.status(200).json(ifPublic.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
+const getPublicSleepers = asyncHandler(async (req, res) => {
+
+  try {
+    const publicSleepers = await pool.query("SELECT * FROM all_sleepers WHERE publicly_tradable = TRUE");
+    res.status(200).json(publicSleepers.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
+const getLastSleeperValue = asyncHandler(async (req, res) => {
+
+  try {
+    const latestSleepValue = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [req.body.userUid]);
+    res.status(200).json(latestSleepValue.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
 const snapshotAllPortfolios = asyncHandler( async (req, res) => {
 	try {
 		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
@@ -163,5 +215,9 @@ module.exports = {
   test2,
   createSleepLog,
   getSleepLogs,
+  getIfUserPublic,
+  changeIfUserPublic,
+  getPublicSleepers,
+  getLastSleeperValue,
   snapshotAllPortfolios,
 };

@@ -2,7 +2,15 @@ import {
   Grid, 
   GridItem, 
   Container, 
+  Box,
+  Heading,
+  Text,
+  Link
 } from '@chakra-ui/react';
+
+import { Link as RouterLink } from 'react-router-dom';
+
+import { ArrowForwardIcon } from '@chakra-ui/icons'
 
 import DashboardGraph from '../components/Dashboard/DashboardGraph';
 import DashboardPortfolio from '../components/Dashboard/DashboardPortfolio';
@@ -26,7 +34,15 @@ const Dashboard = () => {
           <DashboardPortfolio />
         </GridItem>
         <GridItem area={'invest'}>
-        <DashboardInvest />
+        <Heading as='h2' size='lg'>
+          Invest
+        </Heading>
+        <Link as={RouterLink} to='/invest'>
+          <Text>View sleepers <ArrowForwardIcon /></Text>
+        </Link>
+        <Box boxShadow='base' rounded='md' bg='white' area={'invest'} p={3}>
+          <DashboardInvest />
+        </Box>
         </GridItem>
       </Grid>
     </Container>

@@ -11,7 +11,7 @@ import { ArrowForwardIcon } from '@chakra-ui/icons'
 
 const DashboardPortfolio = () => {
   return (
-    <div>
+    <>
       <Heading as='h2' size='lg'>
         Portfolio
       </Heading>
@@ -21,7 +21,7 @@ const DashboardPortfolio = () => {
       <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'}>
         yo
       </Box>
-    </div>
+    </>
   )
 }
 export default DashboardPortfolio
