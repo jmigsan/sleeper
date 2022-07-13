@@ -4,8 +4,8 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 import {
@@ -14,13 +14,20 @@ import {
   StatLabel,
   StatNumber,
   StatHelpText,
-  Heading
+  Heading,
+  Text,
+  Tooltip as ChakraTooltip,
 } from '@chakra-ui/react';
 
 import firebaseApp from '../../firebaseInit';
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
 const auth = getAuth(firebaseApp);
+
 
 const data = [
   {
@@ -51,17 +58,35 @@ const data = [
 
 const DashboardGraph = () => {
   const [user, loading, error] = useAuthState(auth);
+  const [userCash, setUserCash] = useState('.....');
+
+  const getCash = async () => {
+    if (user) {
+      const LogData = {userUid: user.uid};
+      const response = await axios.post('/api/getUserCash', LogData);
+      const sleeperCash = await response.data[0].sleeper_cash_on_hand;
+      setUserCash(sleeperCash.toLocaleString());
+    };
+  };
+
+  useEffect(() => {
+    getCash();
+  }, [])
+  
 
   if (user) {
     return (
       <>
-        <Stat p={5}>
-          <StatLabel>
-            <Heading as='h2' size='lg'>Balance</Heading>
-          </StatLabel>
-          <StatNumber>£13.52</StatNumber>
-          <StatHelpText>Feb 12 - Feb 28</StatHelpText>
-        </Stat>
+        <Box p={5}>
+          <Heading as='h2' size='xl'>Balance</Heading>
+          <Box>
+            <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{userCash} </Text>
+            <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks'>
+              <Text fontSize={'2xl'} as={'span'}>SB</Text>
+            </ChakraTooltip>
+
+          </Box>
+        </Box>
         <ResponsiveContainer width={'99%'} height={250}>
           <LineChart
             data={data}

@@ -11,6 +11,9 @@ import {
   StatGroup,
   Button,
   HStack,
+  Flex,
+  Center,
+  Box,
 } from '@chakra-ui/react'
 
 import { useParams } from 'react-router-dom';
@@ -21,8 +24,9 @@ import SStatsGraph1 from '../components/SleeperStats/SStatsGraph1';
 import SStatsGraph2 from '../components/SleeperStats/SStatsGraph2';
 import SStatsName from '../components/SleeperStats/SStatsName';
 import SStatsStatGroup from '../components/SleeperStats/SStatsStatGroup';
-// import SStatsStats from '../components/SleeperStats/SStatsStats';
+import SStatsStats from '../components/SleeperStats/SStatsStats';
 import SStatsGraph3 from '../components/SleeperStats/SStatsGraph3';
+import SStatsInvest from '../components/SleeperStats/SStatsInvest';
 
 const SleeperStats = () => {
   let { sleeperId } = useParams();
@@ -135,13 +139,14 @@ const SleeperStats = () => {
       
       <Grid
         templateAreas={{
-          base: `'invest'
+          base: `'stats'
                  'graph1' 
                  'graph2'
-                 'graph3'`,
-          md: `'graph1 invest' 
-               'graph2 invest'
-               'graph3 invest'`
+                 'graph3'
+                 'stats-mobile'`,
+          md: `'graph1 stats' 
+               'graph2 stats'
+               'graph3 stats'`
         }}
         gridTemplateRows={'auto'}
         gridTemplateColumns={'auto'}
@@ -159,15 +164,14 @@ const SleeperStats = () => {
           <Heading as='h2' size='md'>Sleep times</Heading>
           <SStatsGraph3 SLog4={SLog4}/>
         </GridItem>
-        <GridItem area={'invest'}>
-          <HStack>
-            <Button bg={'green.200'}>
-              Buy
-            </Button>
-            <Button bg={'red.200'}>
-              Sell
-            </Button>
-          </HStack>
+        <GridItem area={'stats'}>
+          <SStatsInvest/>
+          <Box display={{base: 'none', md: 'inline'}}>
+            <SStatsStats/>
+          </Box>
+        </GridItem>
+        <GridItem area={'stats-mobile'} display={{base: 'inline', md: 'none'}}>
+          <SStatsStats/>
         </GridItem>
       </Grid>
       

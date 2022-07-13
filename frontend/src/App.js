@@ -38,7 +38,16 @@ function App() {
           }
         />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/portfolio" element={<Portfolio />} />
+        <Route
+          path="/portfolio"
+          element={
+            !user ? (
+              <Navigate replace to="/signin" />
+            ) : (
+              <Portfolio />
+            )
+          }
+        />
         <Route path="/invest" element={<Invest />} />
         <Route path="sleeper">
           <Route path=":sleeperId" element={<SleeperStats />} />

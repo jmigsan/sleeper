@@ -226,6 +226,19 @@ const getSleeperName = asyncHandler(async (req, res) => {
 
 });
 
+const getUserCash = asyncHandler(async (req, res) => {
+
+  try {
+    const getCash = await pool.query("SELECT sleeper_cash_on_hand FROM all_sleepers WHERE sleeper_id = $1", [req.body.userUid]);
+    res.status(200).json(getCash.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  }
+
+});
+
 const snapshotAllPortfolios = asyncHandler( async (req, res) => {
 	try {
 		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
@@ -272,5 +285,6 @@ module.exports = {
   initSleeper,
   getPublicSleepersInfo,
   getSleeperName,
+  getUserCash,
   snapshotAllPortfolios,
 };
