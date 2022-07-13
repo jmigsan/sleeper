@@ -32,7 +32,17 @@ const Dashboard = () => {
           <DashboardGraph />
         </GridItem>
         <GridItem area={'portfolio'}>
-          <DashboardPortfolio />
+          <Heading as='h2' size='lg'>
+            Portfolio
+          </Heading>
+          <Box pb={1}>
+            <Link as={RouterLink} to='/portfolio'>
+              <Text>View portfolio <ArrowForwardIcon /></Text>
+            </Link>
+          </Box>
+          <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'} p={3}>
+            <DashboardPortfolio /> 
+          </Box>
         </GridItem>
         <GridItem area={'invest'}>
         <Heading as='h2' size='lg'>

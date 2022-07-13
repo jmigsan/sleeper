@@ -8,11 +8,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const SStatsGraph1 = ({ SLog1 }) => {
+const SStatsGraph1 = ({ SLog4 }) => {
   return (
     <ResponsiveContainer width={'99%'} height={250}>
       <LineChart
-        data={SLog1}
+        data={SLog4}
         margin={{
           top: 5,
           right: 30,
@@ -26,7 +26,7 @@ const SStatsGraph1 = ({ SLog1 }) => {
         <Tooltip />
         <Line
           type="monotone"
-          dataKey="Sleep Value"
+          dataKey="Sleep Times"
           stroke="#63b3ed"
           activeDot={{ r: 8 }}
         />

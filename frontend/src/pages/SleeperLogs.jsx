@@ -47,6 +47,8 @@ const Portfolio = () => {
   const [SLog1, setSLog1] = useState();
   const [SLog2, setSLog2] = useState();
 
+  const [sleeperName, setSleeperName] = useState('Loading');
+
   const getLogs = async () => {
     try {
       let currentUserToken = await auth.currentUser.getIdToken(true);
@@ -62,10 +64,9 @@ const Portfolio = () => {
       const LogData = { userUid }
 
       const response = await axios.post('/api/getSleepLogs', LogData, config);
-
       const resData = await response.data;
 
-      const updatedSLog1 = [];
+      let updatedSLog1 = [];
       resData.forEach((x) => {
         const logData = {
           'Date': x.log_date,
@@ -75,7 +76,7 @@ const Portfolio = () => {
       });
       setSLog1(updatedSLog1);
 
-      const updatedSLog2 = [];
+      let updatedSLog2 = [];
       resData.forEach((x) => {
         const hours_slept = (x.minutes_slept) / 60;
 
@@ -92,8 +93,15 @@ const Portfolio = () => {
     };
   };
 
+  const getSleeperName = async () => {
+    const LogData = {sleeperId: user.uid};
+    const response = await axios.post('/api/getSleeperName', LogData);
+    setSleeperName(response.data[0].sleeper_name);
+  };
+
   useEffect(() => {
     getLogs();
+    getSleeperName();
   }, [])
 
   const now = new Date();
@@ -112,9 +120,21 @@ const Portfolio = () => {
   if (lastDate === 'loading') {
     return (
       <Container maxW={'5xl'} p={4}>
-        <Heading as='h1' pt={3} size='2xl' pb={8}>
-          {user.email}'s Sleep Logs
-        </Heading>
+        
+        {
+          sleeperName === 'Loading' ? (
+            <Skeleton>
+              <Heading as='h1' pt={3} size='2xl' pb={8}>
+                Your Sleep Logs
+              </Heading>
+            </Skeleton>
+          )
+          : (
+            <Heading as='h1' pt={3} size='2xl' pb={8}>
+              {sleeperName}'s Sleep Logs
+            </Heading>
+          )
+        }
   
         <Grid
           templateAreas={{base:`'sleep_ask' 
@@ -197,9 +217,21 @@ const Portfolio = () => {
   if (lastDate !== nowDate) {
     return (
       <Container maxW={'5xl'} p={4}>
-        <Heading as='h1' pt={3} size='2xl' pb={8}>
-          {user.email}'s Sleep Logs
-        </Heading>
+
+        {
+          sleeperName === 'Loading' ? (
+            <Skeleton>
+              <Heading as='h1' pt={3} size='2xl' pb={8}>
+                Your Sleep Logs
+              </Heading>
+            </Skeleton>
+          )
+          : (
+            <Heading as='h1' pt={3} size='2xl' pb={8}>
+              {sleeperName}'s Sleep Logs
+            </Heading>
+          )
+        }
   
         <Grid
           templateAreas={{base:`'sleep_ask' 
@@ -287,9 +319,21 @@ const Portfolio = () => {
   if (lastDate === nowDate) {
     return (
       <Container maxW={'5xl'} p={4}>
-        <Heading as='h1' pt={3} size='2xl' pb={8}>
-          {user.email}'s Sleep Logs
-        </Heading>
+
+        {
+          sleeperName === 'Loading' ? (
+            <Skeleton>
+              <Heading as='h1' pt={3} size='2xl' pb={8}>
+                Your Sleep Logs
+              </Heading>
+            </Skeleton>
+          )
+          : (
+            <Heading as='h1' pt={3} size='2xl' pb={8}>
+              {sleeperName}'s Sleep Logs
+            </Heading>
+          )
+        }
   
         <Grid
           templateAreas={{base:`'sleep_ask' 

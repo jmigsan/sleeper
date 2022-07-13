@@ -7,6 +7,8 @@ import {
   Link,
   Stack,
   Skeleton,
+  Flex,
+  Spacer,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -15,14 +17,13 @@ const DashboardInvest = () => {
 
   const getPublicSleepers = async () => {
     const sleeperData = await axios.get('/api/getPublicSleepersInfo');
-    setSleepers(sleeperData.data);
+    setSleepers(sleeperData.data.slice(0, 3));
   };
 
   useEffect(() => {
     getPublicSleepers();
   }, [])
   
-
   return (
     <>
       {sleepers.length > 0 ? (
@@ -31,10 +32,11 @@ const DashboardInvest = () => {
           <div key={x.sleeper_id}>
             <Link as={RouterLink} to={`/sleeper/${x.sleeper_id}`}>
               <Box boxShadow='base' rounded='md' p={3}>
-                <HStack>
+                <Flex>
                   <Text>{x.sleeper_name}</Text>
+                  <Spacer/>
                   <Text>{x.sleep_value}</Text>
-                </HStack>
+                </Flex>
               </Box>
             </Link>
           </div>
