@@ -18,7 +18,7 @@ create table all_sleepers (
 
 create table all_sleeper_portfolios (
 	sleeper_id CHAR(28) primary key, 
-	portfolio_picks_of_sleeper_ids uuid[]
+	portfolio_picks_of_sleeper_ids uuid
 );
 
 create table all_sleeper_portfolio_logs (
