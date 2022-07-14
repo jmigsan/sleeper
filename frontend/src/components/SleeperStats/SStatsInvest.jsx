@@ -42,7 +42,7 @@ const SStatsInvest = () => {
         </Center>
         <HStack height={95}>
           <Stack>
-            <NumberInput size='lg' maxW={40} defaultValue={0}>
+            <NumberInput size='lg' maxW={40} defaultValue={0} min={0}>
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
@@ -55,7 +55,7 @@ const SStatsInvest = () => {
           </Stack>
           <Divider orientation='vertical' />
           <Stack>
-            <NumberInput size='lg' maxW={40} defaultValue={0}>
+            <NumberInput size='lg' maxW={40} defaultValue={0} min={0}>
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
@@ -66,14 +66,6 @@ const SStatsInvest = () => {
               Sell
             </Button>
           </Stack>
-
-        </HStack>
-
-        
-        
-        <HStack>
-          
-          
         </HStack>
       </Stack>
     </Center>
