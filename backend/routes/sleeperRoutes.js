@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { test, test2, createSleepLog, getSleepLogs, getIfUserPublic, changeIfUserPublic, initSleeper, getPublicSleepersInfo, getSleeperName, getUserCash } = require("../controllers/sleeperController");
+const { test, test2, createSleepLog, getSleepLogs, getIfUserPublic, changeIfUserPublic, initSleeper, getPublicSleepersInfo, getSleeperName, getUserCash, investInSleeper, getUserPortfolio } = require("../controllers/sleeperController");
 
 router.get("/test1", test);
 router.post("/test2", test2);
@@ -14,9 +14,11 @@ router.post("/getIfUserPublic", getIfUserPublic);
 // router.post("/getLastSleeperValue", getLastSleeperValue);
 router.post("/getSleeperName", getSleeperName);
 router.post("/getUserCash", getUserCash);
+router.post("/getUserPortfolio", getUserPortfolio);
 
 router.post("/createSleepLog", createSleepLog);
 router.post("/changeIfUserPublic", changeIfUserPublic);
 router.post("/initSleeper", initSleeper);
+router.post("/investInSleeper", investInSleeper);
 
 module.exports = router;

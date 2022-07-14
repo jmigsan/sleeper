@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   HStack,
+  Link,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react';
 import TimePicker from 'react-time-picker';
@@ -24,6 +25,8 @@ import {
   Bar,
   BarChart,
 } from "recharts";
+
+import { Link as RouterLink } from 'react-router-dom';
 
 import SubmitSleepLogBtn from '../components/SleeperLogs/SubmitSleepLogBtn';
 import CheckIfTradable from '../components/SleeperLogs/CheckIfTradable';
@@ -262,6 +265,11 @@ const Portfolio = () => {
               <Box boxShadow='base' rounded='md' p={3}>
                 <CheckIfTradable />
               </Box>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <Link as={RouterLink} to={`/sleeper/${user.uid}`}>
+                  <Button size={'md'}>View your public sleeper statistics page</Button>
+                </Link>
+              </Box>
             </Stack>
           </GridItem>
           <GridItem area={'sleep_graph'}>
@@ -354,6 +362,11 @@ const Portfolio = () => {
               </Box>
               <Box boxShadow='base' rounded='md' p={3}>
                 <CheckIfTradable />
+              </Box>
+              <Box boxShadow='base' rounded='md' p={3}>
+                <Link as={RouterLink} to={`/sleeper/${user.uid}`}>
+                  <Button size={'md'}>View your public sleeper statistics page</Button>
+                </Link>
               </Box>
             </Stack>
           </GridItem>

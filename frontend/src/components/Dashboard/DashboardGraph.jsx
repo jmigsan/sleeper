@@ -65,7 +65,7 @@ const DashboardGraph = () => {
       const LogData = {userUid: user.uid};
       const response = await axios.post('/api/getUserCash', LogData);
       const sleeperCash = await response.data[0].sleeper_cash_on_hand;
-      setUserCash(sleeperCash.toLocaleString());
+      setUserCash(sleeperCash.toFixed(2).toLocaleString());
     };
   };
 
@@ -81,7 +81,7 @@ const DashboardGraph = () => {
           <Heading as='h2' size='xl'>Balance</Heading>
           <Box>
             <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{userCash} </Text>
-            <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks'>
+            <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
               <Text fontSize={'2xl'} as={'span'}>SB</Text>
             </ChakraTooltip>
 
@@ -116,7 +116,7 @@ const DashboardGraph = () => {
   if (!user) {
     return (
       <>
-        <Heading p={4}>Log in to see your stats</Heading>
+        <Heading p={4}>Log in to see your statistics</Heading>
       </>
     );
   };

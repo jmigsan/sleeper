@@ -18,7 +18,7 @@ const test2 = asyncHandler(async (req, res) => {
   console.log('yo')
 
   try {
-    const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", ['r1QsxmVwPzXq9aD4Ku5xUbZQWme2']);
+    const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [$1]);
     if (latest_sleep_value.rowCount !== 0) {
       res.status(200).json(latest_sleep_value);
     }
@@ -190,7 +190,7 @@ const changeIfUserPublic = asyncHandler(async (req, res) => {
 const initSleeper = asyncHandler(async (req, res) => {
   try {
     const sleeperInit = await pool.query("INSERT INTO all_sleepers (sleeper_id, sleeper_name, sleeper_cash_on_hand, publicly_tradable) VALUES ($1, $2, 1000, TRUE)", [req.body.userUid, req.body.displayName]);
-    res.status(200);
+    res.status(200).json('nice');
   } 
   
   catch (err) {
@@ -203,7 +203,22 @@ const initSleeper = asyncHandler(async (req, res) => {
 const getPublicSleepersInfo = asyncHandler(async (req, res) => {
 
   try {
-    const publicSleepersInfo = await pool.query("SELECT * FROM (SELECT all_sleepers.sleeper_id, all_sleepers.sleeper_name, all_sleepers.publicly_tradable, all_sleeper_logs.sleep_value, all_sleeper_logs.log_timestamp, ROW_NUMBER() OVER(PARTITION BY all_sleepers.sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn FROM all_sleepers INNER JOIN all_sleeper_logs ON all_sleepers.sleeper_id=all_sleeper_logs.sleeper_id) a WHERE rn = 1");
+    const publicSleepersInfo = await pool.query(
+                           `SELECT * 
+                            FROM (
+                              SELECT 
+                                all_sleepers.sleeper_id, 
+                                all_sleepers.sleeper_name,
+                                all_sleepers.publicly_tradable, 
+                                all_sleeper_logs.sleep_value,
+                                all_sleeper_logs.log_timestamp, 
+                                ROW_NUMBER() OVER(PARTITION BY all_sleepers.sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn 
+                              FROM 
+                                all_sleepers INNER JOIN all_sleeper_logs ON all_sleepers.sleeper_id=all_sleeper_logs.sleeper_id
+                              WHERE
+                                all_sleepers.publicly_tradable=TRUE
+                              ) a 
+                            WHERE rn = 1`);
     res.status(200).json(publicSleepersInfo.rows);
   }
   
@@ -216,7 +231,7 @@ const getPublicSleepersInfo = asyncHandler(async (req, res) => {
 const getSleeperName = asyncHandler(async (req, res) => {
 
   try {
-    const ifPublic = await pool.query("SELECT sleeper_name FROM all_sleepers WHERE sleeper_id = $1", [req.body.sleeperId]);
+    const ifPublic = await pool.query('SELECT sleeper_name FROM all_sleepers WHERE sleeper_id = $1', [req.body.sleeperId]);
     res.status(200).json(ifPublic.rows);
   } 
   
@@ -229,13 +244,77 @@ const getSleeperName = asyncHandler(async (req, res) => {
 const getUserCash = asyncHandler(async (req, res) => {
 
   try {
-    const getCash = await pool.query("SELECT sleeper_cash_on_hand FROM all_sleepers WHERE sleeper_id = $1", [req.body.userUid]);
+    const getCash = await pool.query(`SELECT sleeper_cash_on_hand FROM all_sleepers WHERE sleeper_id = $1`, [req.body.userUid]);
     res.status(200).json(getCash.rows);
   } 
   
   catch (err) {
     throw new Error(err);
   }
+
+});
+
+const investInSleeper = asyncHandler(async (req, res) => {
+  const transaction_id = uuidv4();
+
+  try {   
+    await pool.query('BEGIN');
+    await pool.query(`UPDATE all_sleepers 
+                      SET sleeper_cash_on_hand = sleeper_cash_on_hand - (
+                        (SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $2 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY) 
+                        * $3
+                      ) 
+                      WHERE sleeper_id = $1`,
+                      [req.body.investorId, req.body.investmentId, req.body.amount]
+                    );
+    await pool.query('INSERT INTO all_sleeper_portfolios(transaction_id, sleeper_id, pick_sleeper_id, pick_amount) VALUES($1, $2, $3, $4)', [transaction_id, req.body.investorId, req.body.investmentId, req.body.amount]);
+    await pool.query(`UPDATE all_sleepers
+                      SET sleeper_cash_on_hand = sleeper_cash_on_hand + (
+                        (SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY)
+                        * $2
+                      )
+                      WHERE sleeper_id = $1`,
+                      [req.body.investmentId, req.body.amount]
+                    );
+    await pool.query('COMMIT');
+
+    res.status(200).json('nice');
+  } 
+  
+  catch (err) {
+    // console.log(err);
+    throw new Error(err);
+  };
+
+});
+
+const getUserPortfolio = asyncHandler(async (req, res) => {
+
+  try {
+    const getPortfolio = await pool.query(
+                     `SELECT * 
+                      FROM (
+                        SELECT
+                          all_sleeper_portfolios.sleeper_id,
+                          all_sleeper_portfolios.pick_sleeper_id, 
+                          all_sleepers.sleeper_name, 
+                          all_sleeper_logs.sleep_value, 
+                          all_sleeper_logs.log_timestamp, 
+                          ROW_NUMBER() OVER(PARTITION BY all_sleeper_portfolios.pick_sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn 
+                        FROM 
+                          all_sleeper_portfolios INNER JOIN all_sleeper_logs ON all_sleeper_portfolios.pick_sleeper_id=all_sleeper_logs.sleeper_id INNER JOIN all_sleepers ON all_sleeper_portfolios.pick_sleeper_id=all_sleepers.sleeper_id
+                        WHERE
+                          all_sleeper_portfolios.sleeper_id=$1
+                          ) a
+                      WHERE rn = 1;`, 
+                      [req.body.userUid]
+                    );
+    res.status(200).json(getPortfolio.rows);
+  } 
+  
+  catch (err) {
+    throw new Error(err);
+  };
 
 });
 
@@ -286,5 +365,7 @@ module.exports = {
   getPublicSleepersInfo,
   getSleeperName,
   getUserCash,
+  investInSleeper,
+  getUserPortfolio,
   snapshotAllPortfolios,
 };

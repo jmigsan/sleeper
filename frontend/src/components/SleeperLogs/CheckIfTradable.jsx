@@ -80,14 +80,15 @@ const CheckIfTradable = () => {
     return (
       <>
         <Text pb={2}>You are <Text color={'green.400'} as={'span'}> listed </Text> as a publicly tradable sleeper.</Text>
-        <Button _hover={{bg:'red.200'}} size={'sm'} onClick={togglePublicStatus}>Click to be delisted</Button>
+        <Button _hover={{bg:'red.200'}} size={'sm'} onClick={togglePublicStatus}>Click to be unlisted</Button>
       </>
     )
   };
   if (ifPublic === false) {
     return (
       <>
-        <Text pb={2}>You are <Text color={'red.400'} as={'span'}> not listed </Text> as a publicly tradable sleeper.</Text>
+        <Text pb={2}>You are <Text color={'red.400'} as={'span'}> unlisted </Text> as a publicly tradable sleeper.</Text>
+        <Text pb={2}>Note: Users may still invest if they have your URL.</Text>
         <Button _hover={{bg:'green.200'}} size={'sm'} onClick={togglePublicStatus}>Click to be listed</Button>
       </>
     )
