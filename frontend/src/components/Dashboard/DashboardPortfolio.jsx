@@ -39,7 +39,7 @@ const DashboardPortfolio = () => {
         {sleeperPortfolio.length > 0 ? (
           <Stack>
             {sleeperPortfolio.map(x => (
-            <div key={x.sleeper_id}>
+            <div key={x.pick_sleeper_id}>
               <Link as={RouterLink} to={`/sleeper/${x.pick_sleeper_id}`}>
                 <Box boxShadow='base' rounded='md' p={3}>
                   <Flex>

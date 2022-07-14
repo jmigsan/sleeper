@@ -26,13 +26,19 @@ import {
   TabPanel,
   Box,
   Divider,
+  Input,
 } from '@chakra-ui/react'
 
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useState } from "react";
 
 const SStatsInvest = () => {
-  const [buySellToggle, setBuySellToggle] = useState('buy');
+  const [buyAmount, setBuyAmount] = useState(3.0);
+  const [sellAmount, setSellAmount] = useState();
+
+  const investInSleeper = () => {
+    console.log(buyAmount);
+  };
 
   return (
     <Center pb={4}>
@@ -43,13 +49,13 @@ const SStatsInvest = () => {
         <HStack height={95}>
           <Stack>
             <NumberInput size='lg' maxW={40} defaultValue={0} min={0}>
-              <NumberInputField />
+              <NumberInputField type='number' onChange={(e) => setBuyAmount(e.target.value)} />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
               </NumberInputStepper>
             </NumberInput>
-            <Button bg={'green.200'} rightIcon={<AddIcon />}>
+            <Button bg={'green.200'} rightIcon={<AddIcon />} onClick={() => {investInSleeper()}}>
               Buy
             </Button>
           </Stack>
