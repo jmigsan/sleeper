@@ -9,26 +9,32 @@ const test = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
 });
 
 const test2 = asyncHandler(async (req, res) => {
-  console.log('yo')
+  console.log('oi');
+  const transaction_id = uuidv4();
 
   try {
-    const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [$1]);
-    if (latest_sleep_value.rowCount !== 0) {
-      res.status(200).json(latest_sleep_value);
-    }
-    if (latest_sleep_value.rowCount === 0) {
-      res.status(200).json(latest_sleep_value);
-    }
-    
+    const checkIfThere = await pool.query('SELECT * FROM all_sleeper_portfolios WHERE sleeper_id=$1 AND pick_sleeper_id = $2', [req.body.investorId, req.body.investmentId]);
+    if (checkIfThere.rowCount === 0) {
+      await pool.query('INSERT INTO all_sleeper_portfolios(transaction_id, sleeper_id, pick_sleeper_id, pick_amount) VALUES($1, $2, $3, $4)', [transaction_id, req.body.investorId, req.body.investmentId, req.body.amount]);
+      res.status(200).json('peng');
+    };
+    if (checkIfThere.rowCount !== 0) {
+      await pool.query(`UPDATE all_sleeper_portfolios
+                        SET pick_amount = pick_amount + $3
+                        WHERE sleeper_id=$1 AND pick_sleeper_id = $2`,
+                        [req.body.investorId, req.body.investmentId, req.body.amount]);
+      res.status(200).json('pog');
+    };    
   } 
-  
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
@@ -101,6 +107,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     // console.log(err);
     throw new Error(err);
   }
@@ -130,6 +137,7 @@ const getSleepLogs = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
@@ -143,6 +151,7 @@ const getIfUserPublic = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
@@ -156,6 +165,7 @@ const changeIfUserPublic = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
@@ -194,6 +204,7 @@ const initSleeper = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     // console.log(err);
     throw new Error(err);
   }
@@ -223,6 +234,7 @@ const getPublicSleepersInfo = asyncHandler(async (req, res) => {
   }
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   }
 
@@ -259,6 +271,7 @@ const investInSleeper = asyncHandler(async (req, res) => {
 
   try {   
     await pool.query('BEGIN');
+
     await pool.query(`UPDATE all_sleepers 
                       SET sleeper_cash_on_hand = sleeper_cash_on_hand - (
                         (SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $2 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY) 
@@ -267,7 +280,20 @@ const investInSleeper = asyncHandler(async (req, res) => {
                       WHERE sleeper_id = $1`,
                       [req.body.investorId, req.body.investmentId, req.body.amount]
                     );
-    await pool.query('INSERT INTO all_sleeper_portfolios(transaction_id, sleeper_id, pick_sleeper_id, pick_amount) VALUES($1, $2, $3, $4)', [transaction_id, req.body.investorId, req.body.investmentId, req.body.amount]);
+
+    const checkIfThere = await pool.query('SELECT * FROM all_sleeper_portfolios WHERE sleeper_id=$1 AND pick_sleeper_id = $2', [req.body.investorId, req.body.investmentId]);
+    
+    if (checkIfThere.rowCount === 0) {
+      await pool.query('INSERT INTO all_sleeper_portfolios(transaction_id, sleeper_id, pick_sleeper_id, pick_amount) VALUES($1, $2, $3, $4)', [transaction_id, req.body.investorId, req.body.investmentId, req.body.amount]);
+    };
+    
+    if (checkIfThere.rowCount !== 0) {
+      await pool.query(`UPDATE all_sleeper_portfolios
+                        SET pick_amount = pick_amount + $3
+                        WHERE sleeper_id=$1 AND pick_sleeper_id = $2`,
+                        [req.body.investorId, req.body.investmentId, req.body.amount]);
+    };
+
     await pool.query(`UPDATE all_sleepers
                       SET sleeper_cash_on_hand = sleeper_cash_on_hand + (
                         (SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY)
@@ -276,13 +302,15 @@ const investInSleeper = asyncHandler(async (req, res) => {
                       WHERE sleeper_id = $1`,
                       [req.body.investmentId, req.body.amount]
                     );
+
     await pool.query('COMMIT');
 
-    res.status(200).json('nice');
+    res.status(200).json('Successful Transaction');
   } 
   
   catch (err) {
     // console.log(err);
+    res.status(400);
     throw new Error(err);
   };
 
@@ -299,13 +327,14 @@ const getUserPortfolio = asyncHandler(async (req, res) => {
                           all_sleeper_portfolios.pick_sleeper_id, 
                           all_sleepers.sleeper_name, 
                           all_sleeper_logs.sleep_value, 
+                          all_sleeper_portfolios.pick_amount, 
                           all_sleeper_logs.log_timestamp, 
                           ROW_NUMBER() OVER(PARTITION BY all_sleeper_portfolios.pick_sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn 
                         FROM 
                           all_sleeper_portfolios INNER JOIN all_sleeper_logs ON all_sleeper_portfolios.pick_sleeper_id=all_sleeper_logs.sleeper_id INNER JOIN all_sleepers ON all_sleeper_portfolios.pick_sleeper_id=all_sleepers.sleeper_id
                         WHERE
                           all_sleeper_portfolios.sleeper_id=$1
-                          ) a
+                        ) a
                       WHERE rn = 1;`, 
                       [req.body.userUid]
                     );
@@ -313,6 +342,7 @@ const getUserPortfolio = asyncHandler(async (req, res) => {
   } 
   
   catch (err) {
+    res.status(400);
     throw new Error(err);
   };
 
@@ -350,6 +380,7 @@ const snapshotAllPortfolios = asyncHandler( async (req, res) => {
 	} 
   
 	catch (err) {
+    res.status(400);
 		throw new Error(err);
 	}
 });

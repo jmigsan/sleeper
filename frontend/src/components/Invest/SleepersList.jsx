@@ -29,17 +29,17 @@ const SleepersList = () => {
     {sleepers.length > 0 ? (
       <Stack>
         {sleepers.map(x => (
-        <div key={x.sleeper_id}>
+        <Box key={x.sleeper_id}>
           <Link as={RouterLink} to={`/sleeper/${x.sleeper_id}`}>
             <Box boxShadow='base' rounded='md' p={3}>
               <Flex>
                 <Text>{x.sleeper_name}</Text>
                 <Spacer/>
-                <Text>{x.sleep_value}</Text>
+                <Text>{x.sleep_value} SP</Text>
               </Flex>
             </Box>
           </Link>
-        </div>
+        </Box>
         ))}
       </Stack>
     ) 

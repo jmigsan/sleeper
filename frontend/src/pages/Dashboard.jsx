@@ -5,7 +5,9 @@ import {
   Box,
   Heading,
   Text,
-  Link
+  Link,
+  Flex,
+  Spacer
 } from '@chakra-ui/react';
 
 import { Link as RouterLink } from 'react-router-dom';
@@ -21,8 +23,11 @@ const Dashboard = () => {
   return (
     <Container maxW={'5xl'} p={4}>
       <Grid
-        templateAreas={`"graph      graph"
-                        "portfolio  invest"`}
+        templateAreas={{base: `"graph"
+                               "portfolio"
+                               "invest"`,
+                          md: `"graph      graph"
+                               "portfolio  invest"`}}
 
         gridTemplateRows={'auto'}
         gridTemplateColumns={'auto'}
@@ -41,6 +46,13 @@ const Dashboard = () => {
             </Link>
           </Box>
           <Box boxShadow='base' rounded='md' bg='white' area={'portfolio'} p={3}>
+            <Flex px={1} pb={2}>
+              <Text>Sleeper:</Text>
+              <Spacer/>
+              <Text>Investment:</Text>
+              <Spacer/>
+              <Text>Sleep Value:</Text>
+            </Flex>
             <DashboardPortfolio /> 
           </Box>
         </GridItem>
@@ -54,6 +66,11 @@ const Dashboard = () => {
           </Link>
         </Box>
         <Box boxShadow='base' rounded='md' bg='white' area={'invest'} p={3}>
+          <Flex px={1} pb={2}>
+            <Text>Sleeper:</Text>
+            <Spacer/>
+            <Text>Sleep Value:</Text>
+          </Flex>
           <DashboardInvest />
         </Box>
         </GridItem>

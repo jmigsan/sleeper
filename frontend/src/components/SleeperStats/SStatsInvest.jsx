@@ -27,17 +27,52 @@ import {
   Box,
   Divider,
   Input,
+  Text,
+  useToast,
 } from '@chakra-ui/react'
-
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
+
+import axios from 'axios';
 import { useState } from "react";
+import { useParams } from 'react-router-dom';
+
+import firebaseApp from '../../firebaseInit';
+import { getAuth } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+const auth = getAuth(firebaseApp);
 
 const SStatsInvest = () => {
-  const [buyAmount, setBuyAmount] = useState(3.0);
-  const [sellAmount, setSellAmount] = useState();
+  const [user, loading, error] = useAuthState(auth);
 
-  const investInSleeper = () => {
-    console.log(buyAmount);
+  const [buyAmount, setBuyAmount] = useState('0');
+  const [sellAmount, setSellAmount] = useState('0');
+  const [buySellMsg, setBuySellMsg] = useState('');
+
+  const {sleeperId} = useParams();
+
+  const toast = useToast()
+
+  const investInSleeper = async () => {
+    try {
+      const LogData = {investorId: user.uid, investmentId: sleeperId, amount: buyAmount};
+      const response = await axios.post('/api/investInSleeper', LogData);
+      setBuySellMsg(response.data);
+      toast({
+        title: 'Transaction Completed',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+    catch(error) {
+      toast({
+        title: `${error}`,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    };
   };
 
   return (
@@ -48,8 +83,8 @@ const SStatsInvest = () => {
         </Center>
         <HStack height={95}>
           <Stack>
-            <NumberInput size='lg' maxW={40} defaultValue={0} min={0}>
-              <NumberInputField type='number' onChange={(e) => setBuyAmount(e.target.value)} />
+            <NumberInput size='lg' maxW={40} defaultValue={0} min={0} value={buyAmount} onChange={(e) => setBuyAmount(e)}>
+              <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -61,7 +96,7 @@ const SStatsInvest = () => {
           </Stack>
           <Divider orientation='vertical' />
           <Stack>
-            <NumberInput size='lg' maxW={40} defaultValue={0} min={0}>
+            <NumberInput size='lg' maxW={40} defaultValue={0} min={0} value={sellAmount} onChange={(e) => setSellAmount(e)}>
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />

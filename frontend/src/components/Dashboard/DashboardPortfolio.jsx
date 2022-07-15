@@ -7,6 +7,8 @@ import {
   Stack,
   Flex,
   Spacer,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -39,24 +41,26 @@ const DashboardPortfolio = () => {
         {sleeperPortfolio.length > 0 ? (
           <Stack>
             {sleeperPortfolio.map(x => (
-            <div key={x.pick_sleeper_id}>
+            <Box key={x.pick_sleeper_id}>
               <Link as={RouterLink} to={`/sleeper/${x.pick_sleeper_id}`}>
                 <Box boxShadow='base' rounded='md' p={3}>
                   <Flex>
                     <Text>{x.sleeper_name}</Text>
                     <Spacer/>
-                    <Text>{x.sleep_value}</Text>
+                    <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SP</Text>
+                    <Spacer/>
+                    <Text>{x.sleep_value.toFixed(2)} SP</Text>
                   </Flex>
                 </Box>
               </Link>
-            </div>
+            </Box>
             ))}
           </Stack>
         ) 
-        : (<>
+        : (<Box boxShadow='base' rounded='md' p={3}>
             <Text>There seems to be nothing here.</Text>
             <Text>Go find some investments!</Text>
-          </>)}
+          </Box>)}
       </>
     )
   };
