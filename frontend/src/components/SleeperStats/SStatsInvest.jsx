@@ -180,7 +180,7 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
                   <Text>Current Investment: {userPortfolio[0].pick_amount.toFixed(2)} shares</Text>
                 </Center>
                 <Center>
-                  <Text>Cash Available: {userCash} SP</Text>
+                  <Text>Cash Available: {userCash} SB</Text>
                 </Center>
               </Stack>
             </Center>

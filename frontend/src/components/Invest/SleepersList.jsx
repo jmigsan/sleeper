@@ -35,7 +35,7 @@ const SleepersList = () => {
               <Flex>
                 <Text>{x.sleeper_name}</Text>
                 <Spacer/>
-                <Text>{x.sleep_value} SP</Text>
+                <Text>{x.sleep_value} SB</Text>
               </Flex>
             </Box>
           </Link>

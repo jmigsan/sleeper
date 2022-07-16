@@ -59,9 +59,9 @@ const Portfolio = () => {
                   <Spacer/>
                   <Text>{((x.pick_amount)).toFixed(2)}</Text>
                   <Spacer/>
-                  <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SP</Text>
+                  <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SB</Text>
                   <Spacer/>
-                  <Text>{x.sleep_value.toFixed(2)} SP</Text>
+                  <Text>{x.sleep_value.toFixed(2)} SB</Text>
                 </Flex>
               </Box>
             </Link>
