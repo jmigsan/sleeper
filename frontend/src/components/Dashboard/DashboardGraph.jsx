@@ -54,7 +54,7 @@ const DashboardGraph = () => {
       updatedSLog1.push(logData);
     });
     setSleeperPortfolio(updatedSLog1);
-    console.log(updatedSLog1);
+    // console.log(updatedSLog1);
 
     let portfolioVal = 0;
     portfolioData.data.forEach((x) => {
