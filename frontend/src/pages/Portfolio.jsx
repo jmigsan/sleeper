@@ -8,6 +8,7 @@ import {
   Stack,
   Flex,
   Spacer,
+  Tooltip as ChakraTooltip,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -59,9 +60,19 @@ const Portfolio = () => {
                   <Spacer/>
                   <Text>{((x.pick_amount)).toFixed(2)}</Text>
                   <Spacer/>
-                  <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SB</Text>
+                  <HStack>
+                    <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)}</Text>
+                    <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
+                      <Text>SB</Text>
+                    </ChakraTooltip>
+                  </HStack>
                   <Spacer/>
-                  <Text>{x.sleep_value.toFixed(2)} SB</Text>
+                  <HStack>
+                    <Text>{x.sleep_value.toFixed(2)}</Text>
+                    <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
+                      <Text>SB</Text>
+                    </ChakraTooltip>
+                  </HStack>
                 </Flex>
               </Box>
             </Link>

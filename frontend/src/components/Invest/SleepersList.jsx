@@ -9,6 +9,7 @@ import {
   Skeleton,
   Flex,
   Spacer,
+  Tooltip as ChakraTooltip,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -35,7 +36,12 @@ const SleepersList = () => {
               <Flex>
                 <Text>{x.sleeper_name}</Text>
                 <Spacer/>
-                <Text>{x.sleep_value} SB</Text>
+                <HStack>
+                  <Text>{x.sleep_value}</Text>
+                  <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
+                    <Text>SB</Text>
+                  </ChakraTooltip>
+                </HStack>
               </Flex>
             </Box>
           </Link>

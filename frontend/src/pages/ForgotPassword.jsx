@@ -35,8 +35,9 @@ const ForgotPassword = () => {
       const userCredential = await sendPasswordResetEmail(auth, email)
       toast({
         title: 'Password Reset Email Sent',
+        description: `If you can't see it, check your spam folder`,
         status: 'success',
-        duration: 5000,
+        duration: 9500,
         isClosable: true,
       })
       navigate('/signin');
