@@ -68,7 +68,7 @@ const ForgotPassword = () => {
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Forgot your password?</Heading>
           <Text fontSize={'lg'} color={'gray.600'}>
-            We hope to see you soon!
+            We'll send you an email so you can reset it
           </Text>
         </Stack>
         <Box
