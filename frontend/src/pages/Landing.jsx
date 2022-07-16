@@ -37,7 +37,7 @@ const Landing = () => {
             <Button
               rounded={'full'}
               px={6}
-              colorScheme={'green'}
+              colorScheme={'blue'}
               bg={'blue.400'}
               _hover={{ bg: 'blue.500' }}>
               Get started
