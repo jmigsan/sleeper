@@ -159,8 +159,8 @@ const createSleepLog = asyncHandler(async (req, res) => {
       }
     }
     if (latest_sleep_value.rowCount === 0) {
-      const float_sleep_value = parseFloat(0.0);
-      sleep_value = 60 + float_sleep_value;
+      // const float_sleep_value = parseFloat(0.0);
+      sleep_value = 60;
     }    
     
     const new_sleep_log = await pool.query("INSERT INTO all_sleeper_logs (log_id, log_timestamp, sleeper_id, sleep_time, awake_time, minutes_slept, sleep_value, log_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [log_id, log_timestamp, req.body.userUid, req.body.sleepyTime, req.body.wakeyTime, mins_slept, sleep_value, req.body.wakeyDate]);
