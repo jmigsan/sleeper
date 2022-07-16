@@ -62,7 +62,7 @@ const SStatsStats = ({SLog1, SLog2, SLog4}) => {
     if (log4.at(-2)) {
       return (
         <Tr>
-          <Td>Previous Date Logged</Td>
+          <Td>Last Date Logged</Td>
           <Td>{log4.at(-2).date}</Td>
         </Tr>
       )
@@ -70,7 +70,7 @@ const SStatsStats = ({SLog1, SLog2, SLog4}) => {
     else {
       return (
         <Tr>
-          <Td>Previous Date Logged</Td>
+          <Td>Last Date Logged</Td>
           <Td>n/a</Td>
         </Tr>
       )
