@@ -42,6 +42,8 @@ const Portfolio = () => {
       <Flex px={1} pb={2}>
         <Text>Sleeper:</Text>
         <Spacer/>
+        <Text>Shares:</Text>
+        <Spacer/>
         <Text>Investment:</Text>
         <Spacer/>
         <Text>Sleep Value:</Text>
@@ -54,6 +56,8 @@ const Portfolio = () => {
               <Box boxShadow='base' rounded='md' p={3}>
                 <Flex>
                   <Text>{x.sleeper_name}</Text>
+                  <Spacer/>
+                  <Text>{((x.pick_amount)).toFixed(2)}</Text>
                   <Spacer/>
                   <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SP</Text>
                   <Spacer/>

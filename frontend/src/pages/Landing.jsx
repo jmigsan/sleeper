@@ -7,7 +7,10 @@ import {
   Button,
   Image,
   Center,
+  Link,
 } from '@chakra-ui/react';
+
+import { Link as RouterLink } from 'react-router-dom';
 
 const Landing = () => {
   return (
@@ -30,17 +33,16 @@ const Landing = () => {
           Are they gonna sleep early? Are the gonna sleep late? Are they gonna do it consistently? Are they sleep deprived? 
         </Text>
         <Stack spacing={6} direction={'row'}>
-          <Button
-            rounded={'full'}
-            px={6}
-            colorScheme={'green'}
-            bg={'blue.400'}
-            _hover={{ bg: 'blue.500' }}>
-            Get started
-          </Button>
-          <Button rounded={'full'} px={6}>
-            Learn more
-          </Button>
+          <Link as={RouterLink} to='/dashboard'>
+            <Button
+              rounded={'full'}
+              px={6}
+              colorScheme={'green'}
+              bg={'blue.400'}
+              _hover={{ bg: 'blue.500' }}>
+              Get started
+            </Button>
+          </Link>
         </Stack>
         <Flex>
           <Center>

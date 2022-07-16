@@ -93,7 +93,7 @@ const SignUp = () => {
             Sign Up
           </Heading>
           <Text fontSize={'lg'} color={'gray.600'}>
-            to enjoy all of our cool features ✌️
+            to invest in some sleepers 🛌😴🤑
           </Text>
         </Stack>
         <Box

@@ -90,20 +90,81 @@ const createSleepLog = asyncHandler(async (req, res) => {
 
     let sleep_value = 0;
 
-    const latest_sleep_value = await pool.query("SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [req.body.userUid]);
+    const latest_sleep_value = await pool.query(
+                                               `SELECT 
+                                                  sleep_value 
+                                                FROM 
+                                                  all_sleeper_logs
+                                                WHERE 
+                                                  sleeper_id = $1 
+                                                ORDER BY 
+                                                  log_timestamp DESC 
+                                                FETCH 
+                                                  FIRST ROW ONLY`, [req.body.userUid]);
     if (latest_sleep_value.rowCount !== 0) {
       const sv_data = latest_sleep_value.rows[0];
       const sv_data_value = sv_data.sleep_value;
       const float_sleep_value = parseFloat(sv_data_value)
-      sleep_value = 1.23 + float_sleep_value;
+      
+      const latestSleepTime = await pool.query("SELECT * FROM all_sleeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [req.body.userUid]);
+      let lastTime = latestSleepTime.rows[0].sleep_time.substring(0,5)
+      let thisTime = req.body.sleepyTime.substring(0,5)
+
+      let date1 = new Date (`17 July 2022 ${thisTime}`)
+      let date2 = new Date (`17 July 2022 ${lastTime}`)
+
+      if (thisTime.substring(0,2) < 16 && lastTime.substring(0,2) < 16) {
+
+       }
+        
+      if (thisTime.substring(0,2) > 16 && lastTime.substring(0,2) > 16) {
+
+      }
+      
+      if (thisTime.substring(0,2) > 16 && lastTime.substring(0,2) < 16) {
+        date1.setDate(16)
+      }
+
+      let diff = (Math.abs(date1.getTime() - date2.getTime()) / 60000)
+      if (diff < 70) {
+        if (thisTime.substring(0,2) >= 16) {
+          // sleep_value = float_sleep_value + ((diff)*1.8);
+          sleep_value = float_sleep_value + 60;
+        }
+        if (thisTime.substring(0,2) < 16) {
+          // sleep_value = float_sleep_value - ((diff)*1.8);
+          if ((float_sleep_value - 60) < 0.01) {
+            sleep_value = 0.01;
+          }
+          else {
+            sleep_value = float_sleep_value - 60;
+          }
+          
+        }
+      }
+      else {
+        if (thisTime.substring(0,2) >= 16) {
+          // sleep_value = float_sleep_value + (diff);
+          sleep_value = float_sleep_value + 40;
+        }
+        if (thisTime.substring(0,2) < 16) {
+          // sleep_value = float_sleep_value - (diff);
+          if ((float_sleep_value - 40) < 0.01) {
+            sleep_value = 0.01;
+          }
+          else {
+            sleep_value = float_sleep_value - 40;
+          }
+        }
+      }
     }
     if (latest_sleep_value.rowCount === 0) {
       const float_sleep_value = parseFloat(0.0);
-      sleep_value = 1.23 + float_sleep_value;
+      sleep_value = 60 + float_sleep_value;
     }    
     
     const new_sleep_log = await pool.query("INSERT INTO all_sleeper_logs (log_id, log_timestamp, sleeper_id, sleep_time, awake_time, minutes_slept, sleep_value, log_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [log_id, log_timestamp, req.body.userUid, req.body.sleepyTime, req.body.wakeyTime, mins_slept, sleep_value, req.body.wakeyDate]);
-    res.status(200).json(new_sleep_log);
+    res.status(200).json('new_sleep_log');
   } 
   
   catch (err) {
@@ -130,7 +191,10 @@ const getSleepLogs = asyncHandler(async (req, res) => {
         "sleeper_id": req.body.userUid,
         "minutes_slept": 0,
         "sleep_value": 0,
-        "log_date": 0
+        "log_date": 0,
+        "sleep_time": "00:00:00",
+        "awake_time": "00:00:00",
+        "log_id": "00000000-0000-0000-0000-000000000000"
       }]);
     }
     
@@ -348,42 +412,107 @@ const getUserPortfolio = asyncHandler(async (req, res) => {
 
 });
 
-const snapshotAllPortfolios = asyncHandler( async (req, res) => {
-	try {
-		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
+const sellSleeper = asyncHandler(async (req, res) => {
+  // const transaction_id = uuidv4();
 
-		let now = new Date();
-		let nowUTC = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-		let snapshot_date = nowUTC.toISOString();
+  try {   
+    await pool.query('BEGIN');
 
-		every_sleeper.forEach( async (x) => {
-			let invested_sleep_value = 0.0;
+    await pool.query(`UPDATE all_sleepers 
+                      SET sleeper_cash_on_hand = sleeper_cash_on_hand + (
+                        (SELECT sleep_value FROM all_sleeper_logs WHERE sleeper_id = $2 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY) 
+                        * $3
+                      ) 
+                      WHERE sleeper_id = $1`,
+                      [req.body.investorId, req.body.investmentId, req.body.amount]
+                    );
 
-			x.portfolio_picks_of_sleeper_ids.forEach( async (x) => {
-				const single_sleep_value = await pool.query("SELECT * FROM all_speeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [x])
-				invested_sleep_value = invested_sleep_value + parseFloat(single_sleep_value); 
-        console.log(invested_sleep_value);
-        // not sure if return is string or not
-			});
+    await pool.query(`UPDATE all_sleeper_portfolios
+                      SET pick_amount = pick_amount - $3
+                      WHERE sleeper_id=$1 AND pick_sleeper_id = $2`,
+                      [req.body.investorId, req.body.investmentId, req.body.amount]);
 
-      // for (let i = 0; i < x.portfolio_picks_of_sleeper_ids.length; i++) {
-      //   const single_sleep_value = await pool.query("SELECT * FROM all_speeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [x.portfolio_picks_of_sleeper_ids[i]])
-			//   invested_sleep_value = invested_sleep_value + parseFloat(single_sleep_value);
-      //   console.log(invested_sleep_value);
-      // };
+    await pool.query('COMMIT');
 
-			const sleeper_cash_on_hand = await pool.query("SELECT sleeper_cash_on_hand FROM all_sleepers WHERE sleeper_id = $1", [x.sleeper_id]);
-			const total_sleep_value = parseFloat(sleeper_cash_on_hand) + invested_sleep_value;
-			const new_portfolio_log = await pool.query("INSERT INTO all_sleeper_portfolio_logs (sleeper_id, snapshot_date, snapshot_sleep_value) VALUES($1, $2, $3) RETURNING *", [x.sleeper_id, snapshot_date, total_sleep_value]);
-		});
-		res.status(200);
-	} 
+    res.status(200).json('Successful Transaction');
+  } 
   
-	catch (err) {
+  catch (err) {
+    // console.log(err);
     res.status(400);
-		throw new Error(err);
-	}
+    throw new Error(err);
+  };
+
 });
+
+const getUserPortfolioForOne = asyncHandler(async (req, res) => {
+
+  try {
+    const getPortfolio = await pool.query(
+                     `SELECT * 
+                      FROM (
+                        SELECT
+                          all_sleeper_portfolios.sleeper_id,
+                          all_sleeper_portfolios.pick_sleeper_id, 
+                          all_sleepers.sleeper_name, 
+                          all_sleeper_logs.sleep_value, 
+                          all_sleeper_portfolios.pick_amount, 
+                          all_sleeper_logs.log_timestamp, 
+                          ROW_NUMBER() OVER(PARTITION BY all_sleeper_portfolios.pick_sleeper_id ORDER BY all_sleeper_logs.log_timestamp DESC) rn 
+                        FROM 
+                          all_sleeper_portfolios INNER JOIN all_sleeper_logs ON all_sleeper_portfolios.pick_sleeper_id=all_sleeper_logs.sleeper_id INNER JOIN all_sleepers ON all_sleeper_portfolios.pick_sleeper_id=all_sleepers.sleeper_id
+                        WHERE
+                          all_sleeper_portfolios.sleeper_id=$1 AND all_sleeper_portfolios.pick_sleeper_id =$2
+                        ) a
+                      WHERE rn = 1;`, 
+                      [req.body.userUid, req.body.pickId]
+                    );
+    res.status(200).json(getPortfolio.rows);
+  } 
+  
+  catch (err) {
+    res.status(400);
+    throw new Error(err);
+  };
+
+});
+
+// const snapshotAllPortfolios = asyncHandler( async (req, res) => {
+// 	try {
+// 		const every_sleeper = await pool.query("SELECT * FROM all_sleeper_portfolios");
+
+// 		let now = new Date();
+// 		let nowUTC = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+// 		let snapshot_date = nowUTC.toISOString();
+
+// 		every_sleeper.forEach( async (x) => {
+// 			let invested_sleep_value = 0.0;
+
+// 			x.portfolio_picks_of_sleeper_ids.forEach( async (x) => {
+// 				const single_sleep_value = await pool.query("SELECT * FROM all_speeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [x])
+// 				invested_sleep_value = invested_sleep_value + parseFloat(single_sleep_value); 
+//         console.log(invested_sleep_value);
+//         // not sure if return is string or not
+// 			});
+
+//       // for (let i = 0; i < x.portfolio_picks_of_sleeper_ids.length; i++) {
+//       //   const single_sleep_value = await pool.query("SELECT * FROM all_speeper_logs WHERE sleeper_id = $1 ORDER BY log_timestamp DESC FETCH FIRST ROW ONLY", [x.portfolio_picks_of_sleeper_ids[i]])
+// 			//   invested_sleep_value = invested_sleep_value + parseFloat(single_sleep_value);
+//       //   console.log(invested_sleep_value);
+//       // };
+
+// 			const sleeper_cash_on_hand = await pool.query("SELECT sleeper_cash_on_hand FROM all_sleepers WHERE sleeper_id = $1", [x.sleeper_id]);
+// 			const total_sleep_value = parseFloat(sleeper_cash_on_hand) + invested_sleep_value;
+// 			const new_portfolio_log = await pool.query("INSERT INTO all_sleeper_portfolio_logs (sleeper_id, snapshot_date, snapshot_sleep_value) VALUES($1, $2, $3) RETURNING *", [x.sleeper_id, snapshot_date, total_sleep_value]);
+// 		});
+// 		res.status(200);
+// 	} 
+  
+// 	catch (err) {
+//     res.status(400);
+// 		throw new Error(err);
+// 	}
+// });
 
 module.exports = {
   test,
@@ -397,6 +526,7 @@ module.exports = {
   getSleeperName,
   getUserCash,
   investInSleeper,
+  sellSleeper,
   getUserPortfolio,
-  snapshotAllPortfolios,
+  getUserPortfolioForOne,
 };

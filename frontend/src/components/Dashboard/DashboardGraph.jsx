@@ -6,6 +6,10 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
+  PieChart, 
+  Pie, 
+  Sector, 
+  Cell,
 } from "recharts";
 
 import {
@@ -17,6 +21,8 @@ import {
   Heading,
   Text,
   Tooltip as ChakraTooltip,
+  HStack,
+  Flex,
 } from '@chakra-ui/react';
 
 import firebaseApp from '../../firebaseInit';
@@ -28,87 +34,81 @@ import axios from 'axios';
 
 const auth = getAuth(firebaseApp);
 
-
-const data = [
-  {
-    date: '1/2/2022',
-    cost: 30
-  },
-  {
-    date: '2/2/2022',
-    cost: 40
-  },
-  {
-    date: '3/2/2022',
-    cost: 20
-  },
-  {
-    date: '4/2/2022',
-    cost: 50
-  },
-  {
-    date: '5/2/2022',
-    cost: 55
-  },
-  {
-    date: '6/2/2022',
-    cost: 10
-  },
-];
-
 const DashboardGraph = () => {
   const [user, loading, error] = useAuthState(auth);
   const [userCash, setUserCash] = useState('.....');
+  const [sleeperPortfolio, setSleeperPortfolio] = useState([]);
+  const [sleeperPortfolioVal, setSleeperPortfolioVal] = useState(0);
+
+  const getUserPortfolio = async () => {
+    const LogData = {userUid: user.uid};
+    const portfolioData = await axios.post('/api/getUserPortfolio', LogData);
+
+    let updatedSLog1 = [];
+    portfolioData.data.forEach((x) => {
+      const investmentAmount = parseFloat((x.sleep_value * x.pick_amount).toFixed(2));
+      const logData = {
+        'Sleeper': x.sleeper_name,
+        'Investment': investmentAmount
+      }
+      updatedSLog1.push(logData);
+    });
+    setSleeperPortfolio(updatedSLog1);
+    console.log(updatedSLog1);
+
+    let portfolioVal = 0;
+    portfolioData.data.forEach((x) => {
+      const investmentAmount = x.sleep_value * x.pick_amount;
+      portfolioVal = portfolioVal + investmentAmount;
+    });
+    setSleeperPortfolioVal(parseFloat(portfolioVal).toFixed(2));
+  };
 
   const getCash = async () => {
     if (user) {
       const LogData = {userUid: user.uid};
       const response = await axios.post('/api/getUserCash', LogData);
       const sleeperCash = await response.data[0].sleeper_cash_on_hand;
-      setUserCash(sleeperCash.toFixed(2).toLocaleString());
+      setUserCash(parseFloat(sleeperCash).toFixed(2));
     };
   };
 
   useEffect(() => {
     getCash();
-  }, [])
+    getUserPortfolio();
+  }, [user])
   
 
   if (user) {
     return (
       <>
-        <Box p={5}>
-          <Heading as='h2' size='xl'>Balance</Heading>
-          <Box>
-            <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{userCash} </Text>
+        <Flex>
+          <Box p={5}>
+            <Heading as='h3' size='md'>Total Portfolio</Heading>
+            <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{(parseFloat(Math.abs(userCash)) + parseFloat(sleeperPortfolioVal)).toLocaleString()} </Text>
             <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
               <Text fontSize={'2xl'} as={'span'}>SB</Text>
             </ChakraTooltip>
 
+            <Heading as='h3' size='md' pt={2}>Cash Value</Heading>
+            <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{(parseFloat(Math.abs(userCash))).toLocaleString()} </Text>
+            <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
+              <Text fontSize={'2xl'} as={'span'}>SB</Text>
+            </ChakraTooltip>
+
+            <Heading as='h3' size='md' pt={2}>Portfolio Value</Heading>
+            <Text fontSize={'2xl'} as={'span'} onMouseOver={() => {if (userCash === '.....') {getCash()}}}>{(parseFloat(Math.abs(sleeperPortfolioVal))).toLocaleString()} </Text>
+            <ChakraTooltip label="Sleep Bucks" aria-label='Sleep Bucks' closeOnClick={false}>
+              <Text fontSize={'2xl'} as={'span'}>SB</Text>
+            </ChakraTooltip>
           </Box>
-        </Box>
-        <ResponsiveContainer width={'99%'} height={250}>
-          <LineChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}
-          >
-            <CartesianGrid strokeDasharray="9 9" />
-            <XAxis dataKey='date' />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="cost"
-              stroke="#63b3ed"
-              activeDot={{ r: 8 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+          <ResponsiveContainer width={'50%'} height={250}>
+            <PieChart>
+              <Tooltip/>
+              <Pie data={sleeperPortfolio} dataKey="Investment" nameKey="Sleeper" cx="50%" cy="50%" fill="#63b3ed"/>
+            </PieChart>
+          </ResponsiveContainer>
+        </Flex>
       </>
     );
   };

@@ -6,41 +6,91 @@ import {
   Td,
   TableContainer,
 } from '@chakra-ui/react'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-const SStatsStats = () => {
-  return (
-    <TableContainer>
-      <Table variant='simple'>
-        <Thead>
-        </Thead>
-        <Tbody>
-          <Tr>
-            <Td>Previous close</Td>
-            <Td>23:00</Td>
-          </Tr>
-          <Tr>
-            <Td>Week's Range</Td>
-            <Td>23:01 - 00:59</Td>
-          </Tr>
-          <Tr>
-            <Td>52 Week Range</Td>
-            <Td>21:11 - 03:22</Td>
-          </Tr>
-          <Tr>
-            <Td>Volume</Td>
-            <Td>18734</Td>
-          </Tr>
-          <Tr>
-            <Td>Today's Sleep Hours</Td>
-            <Td>7.6</Td>
-          </Tr>
-          <Tr>
-            <Td>Past Week Sleep Hours</Td>
-            <Td>53.2</Td>
-          </Tr>
-        </Tbody>
-      </Table>
-    </TableContainer>
-  )
+const SStatsStats = ({SLog1, SLog2, SLog4}) => {
+  const [log1, setLog1] = useState([]);
+  const [log2, setLog2] = useState([]);
+  const [log4, setLog4] = useState([]);
+
+  useEffect(() => {
+    setLog1(SLog1)
+    setLog2(SLog2)
+    setLog4(SLog4)
+  }, [SLog1, SLog2, SLog4])
+
+  const PreviousClose = () => {
+    if (log1.at(-2)) {
+      return (
+        <Tr>
+          <Td>Previous Close</Td>
+          <Td>{log1.at(-2)["Sleep Value"].toFixed(2)}</Td>
+        </Tr>
+      )
+    }
+    else {
+      return (
+        <Tr>
+          <Td>Previous Close</Td>
+          <Td>n/a</Td>
+        </Tr>
+      )
+    }
+  };
+
+  const PreviousHours = () => {
+    if (log2.at(-2)) {
+      return (
+        <Tr>
+          <Td>Previous Hours Slept</Td>
+          <Td>{log2.at(-2)['Hours Slept'].toFixed(2)}</Td>
+        </Tr>
+      )
+    }
+    else {
+      return (
+        <Tr>
+          <Td>Previous Hours Slept</Td>
+          <Td>n/a</Td>
+        </Tr>
+      )
+    }
+  };
+
+  const PreviousLog = () => {
+    if (log4.at(-2)) {
+      return (
+        <Tr>
+          <Td>Previous Date Logged</Td>
+          <Td>{log4.at(-2).date}</Td>
+        </Tr>
+      )
+    }
+    else {
+      return (
+        <Tr>
+          <Td>Previous Date Logged</Td>
+          <Td>n/a</Td>
+        </Tr>
+      )
+    }
+  };
+  
+if (log1 !== undefined || log2 !== undefined || log4 !== undefined) {
+    return (
+      <TableContainer>
+        <Table variant='simple'>
+          <Thead>
+          </Thead>
+          <Tbody>
+            <PreviousClose/>
+            <PreviousHours/>
+            <PreviousLog/>
+          </Tbody>
+        </Table>
+      </TableContainer>
+    )
+  }
 }
 export default SStatsStats

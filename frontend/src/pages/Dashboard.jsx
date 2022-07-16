@@ -49,9 +49,9 @@ const Dashboard = () => {
             <Flex px={1} pb={2}>
               <Text>Sleeper:</Text>
               <Spacer/>
-              <Text>Investment:</Text>
+              <Text>Shares:</Text>
               <Spacer/>
-              <Text>Sleep Value:</Text>
+              <Text>Investment:</Text>
             </Flex>
             <DashboardPortfolio /> 
           </Box>

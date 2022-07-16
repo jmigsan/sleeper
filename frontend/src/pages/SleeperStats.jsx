@@ -28,6 +28,11 @@ import SStatsStats from '../components/SleeperStats/SStatsStats';
 import SStatsGraph3 from '../components/SleeperStats/SStatsGraph3';
 import SStatsInvest from '../components/SleeperStats/SStatsInvest';
 
+import firebaseApp from '../firebaseInit';
+import { getAuth } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+const auth = getAuth(firebaseApp);
+
 const SleeperStats = () => {
   let { sleeperId } = useParams();
 
@@ -35,6 +40,9 @@ const SleeperStats = () => {
   const [SLog2, setSLog2] = useState();
   const [SLog3, setSLog3] = useState();
   const [SLog4, setSLog4] = useState();
+
+  const [user, loading, error] = useAuthState(auth);
+  const [sleeperPortfolio, setSleeperPortfolio] = useState([]);
 
   const getLogs = async () => {
     try {
@@ -116,8 +124,10 @@ const SleeperStats = () => {
       let updatedSLog4 = [];
       resData.forEach((x) => {
         const logData = {
-          'Date': x.log_date,
-          'Sleep Times': x.sleep_times
+          log_id: x.log_id,
+          date: x.log_date,
+          sleep_time: x.sleep_time,
+          awake_time: x.awake_time
         }
         updatedSLog4.push(logData);
       });
@@ -128,9 +138,26 @@ const SleeperStats = () => {
     };
   };
 
+  const getUserPortfolio = async () => {
+    try {
+      const LogData = {userUid: user.uid, pickId: sleeperId};
+      const portfolioData = await axios.post('/api/getUserPortfolioForOne', LogData);
+      setSleeperPortfolio(portfolioData.data);
+      // console.log(sleeperPortfolio)
+      // console.log(LogData)
+    }
+    catch {
+
+    }
+  };
+
   useEffect(() => {
     getLogs();
   }, [])
+
+  useEffect(() => {
+    getUserPortfolio();
+  }, [user])
 
   return (
     <Container maxW={'5xl'} p={4}>
@@ -165,13 +192,13 @@ const SleeperStats = () => {
           <SStatsGraph3 SLog4={SLog4}/>
         </GridItem>
         <GridItem area={'stats'}>
-          <SStatsInvest/>
+          <SStatsInvest sleeperPortfolio={sleeperPortfolio} SLog3={SLog3}/>
           <Box display={{base: 'none', md: 'inline'}}>
-            <SStatsStats/>
+            <SStatsStats SLog1={SLog1} SLog2={SLog2} SLog4={SLog4}/>
           </Box>
         </GridItem>
         <GridItem area={'stats-mobile'} display={{base: 'inline', md: 'none'}}>
-          <SStatsStats/>
+          <SStatsStats SLog1={SLog1} SLog2={SLog2} SLog4={SLog4}/>
         </GridItem>
       </Grid>
       

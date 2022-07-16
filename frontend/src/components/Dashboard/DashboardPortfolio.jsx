@@ -28,12 +28,12 @@ const DashboardPortfolio = () => {
   const getUserPortfolio = async () => {
     const LogData = {userUid: user.uid};
     const portfolioData = await axios.post('/api/getUserPortfolio', LogData);
-    setSleeperPortfolio(portfolioData.data);
+    setSleeperPortfolio(portfolioData.data.slice(0, 3));
   };
 
   useEffect(() => {
     getUserPortfolio();
-  }, [])
+  }, [user])
 
   if (user) {
     return (
@@ -47,9 +47,9 @@ const DashboardPortfolio = () => {
                   <Flex>
                     <Text>{x.sleeper_name}</Text>
                     <Spacer/>
-                    <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SP</Text>
+                    <Text>{((x.pick_amount)).toFixed(2)}</Text>
                     <Spacer/>
-                    <Text>{x.sleep_value.toFixed(2)} SP</Text>
+                    <Text>{((x.sleep_value)*(x.pick_amount)).toFixed(2)} SP</Text>
                   </Flex>
                 </Box>
               </Link>

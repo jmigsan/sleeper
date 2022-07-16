@@ -1,37 +1,50 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Stack, 
+  Skeleton,
+} from '@chakra-ui/react'
 
 const SStatsGraph1 = ({ SLog4 }) => {
-  return (
-    <ResponsiveContainer width={'99%'} height={250}>
-      <LineChart
-        data={SLog4}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray="9 9" />
-        <XAxis dataKey='Date' />
-        <YAxis />
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="Sleep Times"
-          stroke="#63b3ed"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
-    </ResponsiveContainer>
-  )
+
+  if (SLog4) {
+    let SLog4Reverse = [...SLog4].reverse();
+
+    return (
+      <TableContainer>
+        <Table size='sm'>
+          <Thead>
+            <Tr>
+              <Th>Date</Th>
+              <Th isNumeric>Sleep Time</Th>
+              <Th isNumeric>Awake Time</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {SLog4Reverse.map((x) => (
+              <Tr key={x.log_id}>
+                <Td>{x.date}</Td>
+                <Td isNumeric>{x.sleep_time.substring(0,5)}</Td>
+                <Td isNumeric>{x.awake_time.substring(0,5)}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    )
+  }
+  else {
+    <Stack>
+      <Skeleton height='20px' />
+      <Skeleton height='20px' />
+      <Skeleton height='20px' />
+    </Stack>
+  }
 }
 export default SStatsGraph1

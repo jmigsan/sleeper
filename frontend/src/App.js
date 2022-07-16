@@ -16,6 +16,7 @@ import NavBar from './components/All/NavBar';
 import firebaseApp from './firebaseInit'
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import ForgotPassword from './pages/ForgotPassword';
 const auth = getAuth(firebaseApp);
 
 function App() {
@@ -73,7 +74,7 @@ function App() {
             )
           }
         />
-        {/* <Route path="/signup" element={<SignUp />} /> */}
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
