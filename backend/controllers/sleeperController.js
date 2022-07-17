@@ -129,7 +129,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
       if (diff < 70) {
         if (thisTime.substring(0,2) >= 16) {
           // sleep_value = float_sleep_value + ((diff)*1.8);
-          sleep_value = float_sleep_value + 60;
+          sleep_value = (float_sleep_value + 60) * 1.35;
         }
         if (thisTime.substring(0,2) < 16) {
           // sleep_value = float_sleep_value - ((diff)*1.8);
@@ -137,7 +137,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
             sleep_value = 0.01;
           }
           else {
-            sleep_value = float_sleep_value - 60;
+            sleep_value = (float_sleep_value - 60) * 1.35;
           }
           
         }
@@ -145,7 +145,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
       else {
         if (thisTime.substring(0,2) >= 16) {
           // sleep_value = float_sleep_value + (diff);
-          sleep_value = float_sleep_value + 40;
+          sleep_value = (float_sleep_value + 40) * 1.1;
         }
         if (thisTime.substring(0,2) < 16) {
           // sleep_value = float_sleep_value - (diff);
@@ -153,7 +153,7 @@ const createSleepLog = asyncHandler(async (req, res) => {
             sleep_value = 0.01;
           }
           else {
-            sleep_value = float_sleep_value - 40;
+            sleep_value = (float_sleep_value - 40) * 1.1;
           }
         }
       }
