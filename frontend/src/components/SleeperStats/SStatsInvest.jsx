@@ -131,10 +131,16 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
     
     // console.log(log3LastPrice)
   }, [SLog3]);
-  
+
+  if (user) {
+    console.log(`uid: ${user.uid}`)
+  }
+
+  console.log(`sleeperid: ${sleeperId}`)
 
   try {
     if (user.uid === sleeperId) {
+      console.log('user uid = sleeperid')
       return (
         <>
         </>
