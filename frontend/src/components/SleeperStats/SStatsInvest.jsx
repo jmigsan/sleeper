@@ -133,9 +133,6 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
     // console.log(log3LastPrice)
   }, [SLog3]);
 
-  console.log(`slog3`)
-  console.log(SLog3)
-
   try {
     if (user.uid === sleeperId) {
       return (
@@ -144,6 +141,8 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
       )
     };
     if (user.uid !== sleeperId) {
+      console.log('userid !== sleerperid')
+
       return (
         <Center pb={4}>
           <Stack>
