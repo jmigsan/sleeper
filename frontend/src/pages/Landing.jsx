@@ -33,7 +33,7 @@ const Landing = () => {
           Are they gonna sleep early? Are the gonna sleep late? Are they gonna do it consistently? Are they sleep deprived? 
         </Text>
         <Stack spacing={6} direction={'row'}>
-          <Link as={RouterLink} to='/dashboard'>
+          <Link as={RouterLink} to='/dashboard' _hover={{ textDecoration: 'none' }}>
             <Button
               rounded={'full'}
               px={6}
