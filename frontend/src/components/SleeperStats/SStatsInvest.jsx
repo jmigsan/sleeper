@@ -125,6 +125,7 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
   useEffect(() => {
     try {
       setLog3LastPrice(SLog3.lastPrice)
+      console.log(`slog3 set`)
     }
     catch { 
     }
@@ -132,15 +133,11 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
     // console.log(log3LastPrice)
   }, [SLog3]);
 
-  if (user) {
-    console.log(`uid: ${user.uid}`)
-  }
-
-  console.log(`sleeperid: ${sleeperId}`)
+  console.log(`slog3`)
+  console.log(SLog3)
 
   try {
     if (user.uid === sleeperId) {
-      console.log('user uid = sleeperid')
       return (
         <>
         </>
