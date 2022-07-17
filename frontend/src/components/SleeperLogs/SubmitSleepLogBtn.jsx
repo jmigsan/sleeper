@@ -36,7 +36,7 @@ const submitSleepLog = async (sleepyTime, wakeyTime, postFunc) => {
 
     const wakeyDate = `${now.getDate()} ${month} ${now.getFullYear()}`; //10 Jul 2022
     //const wakeyDate = '11 Jul 2022';
-    console.log(wakeyDate); 
+    // console.log(wakeyDate); 
 
     const SleepLogData = {sleepyTime, wakeyTime, wakeyDate, userUid};
 
