@@ -50,12 +50,13 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
   const [buyAmount, setBuyAmount] = useState('0');
   const [sellAmount, setSellAmount] = useState('0');
   const [buySellMsg, setBuySellMsg] = useState('');
+  const [currentPickAmount, setCurrentPickAmount] = useState(0);
 
   const {sleeperId} = useParams();
 
   const toast = useToast()
 
-  const [userPortfolio, setUserPortfolio] = useState(0);
+  const [userPortfolio, setUserPortfolio] = useState(undefined);
   const [userCash, setUserCash] = useState(0);
   const [log3LastPrice, setLog3LastPrice] = useState(0);
 
@@ -124,8 +125,16 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
 
   useEffect(() => {
     try {
+      setCurrentPickAmount(userPortfolio[0].pick_amount)
+    }
+    catch {
+      
+    }
+  }, [userPortfolio])
+
+  useEffect(() => {
+    try {
       setLog3LastPrice(SLog3.lastPrice)
-      console.log(`slog3 set`)
     }
     catch { 
     }
@@ -141,8 +150,6 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
       )
     };
     if (user.uid !== sleeperId) {
-      console.log('userid !== sleerperid')
-
       return (
         <Center pb={4}>
           <Stack>
@@ -164,7 +171,7 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
               </Stack>
               <Divider orientation='vertical' />
               <Stack>
-                <NumberInput size='lg' maxW={40} defaultValue={0} min={0} max={userPortfolio[0].pick_amount} value={sellAmount} precision={2} onChange={(e) => setSellAmount(e)}>
+                <NumberInput size='lg' maxW={40} defaultValue={0} min={0} max={currentPickAmount} value={sellAmount} precision={2} onChange={(e) => setSellAmount(e)}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -179,7 +186,7 @@ const SStatsInvest = ({ sleeperPortfolio, SLog3 }) => {
             <Center pt={1}>
               <Stack>
                 <Center>
-                  <Text>Current Investment: {userPortfolio[0].pick_amount.toFixed(2)} shares</Text>
+                  <Text>Current Investment: {currentPickAmount.toFixed(2)} shares</Text>
                 </Center>
                 <Center>
                   <Text>Cash Available: {userCash} SB</Text>
