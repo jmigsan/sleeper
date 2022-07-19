@@ -115,6 +115,7 @@ const SignUp = () => {
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} />
+                <Text fontSize='sm' color={'gray.600'}>The email doesn't have to be real. <br/> We'll accept awesome@dude.com. You won't be able to recover your password, however.</Text>
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
