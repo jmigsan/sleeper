@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e11a5140.css",
+    "main.js": "/static/js/main.4913b929.js",
+    "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
+    "static/media/open-sans-all-500-normal.woff": "/static/media/open-sans-all-500-normal.05ba398b4c236278ccf0.woff",
+    "static/media/catamaran-all-900-normal.woff": "/static/media/catamaran-all-900-normal.1518d60d701006ec9baa.woff",
+    "static/media/open-sans-cyrillic-ext-500-normal.woff2": "/static/media/open-sans-cyrillic-ext-500-normal.437eddee8fdd3e6dec2e.woff2",
+    "static/media/open-sans-latin-500-normal.woff2": "/static/media/open-sans-latin-500-normal.bb066c8c54f3d2a5bd47.woff2",
+    "static/media/open-sans-latin-ext-500-normal.woff2": "/static/media/open-sans-latin-ext-500-normal.7bb8a96c1096128edb9e.woff2",
+    "static/media/catamaran-tamil-900-normal.woff2": "/static/media/catamaran-tamil-900-normal.1b5fbb5bec0d86f83b98.woff2",
+    "static/media/open-sans-cyrillic-500-normal.woff2": "/static/media/open-sans-cyrillic-500-normal.cccf9cf038cd5000a1b8.woff2",
+    "static/media/open-sans-greek-500-normal.woff2": "/static/media/open-sans-greek-500-normal.9033c7ef12aaaf336c9b.woff2",
+    "static/media/catamaran-latin-900-normal.woff2": "/static/media/catamaran-latin-900-normal.9c5c77fb8df588bf00d8.woff2",
+    "static/media/open-sans-hebrew-500-normal.woff2": "/static/media/open-sans-hebrew-500-normal.aa19216c99223116ee97.woff2",
+    "static/media/open-sans-vietnamese-500-normal.woff2": "/static/media/open-sans-vietnamese-500-normal.6ed2004eea395c87ad5e.woff2",
+    "static/media/catamaran-latin-ext-900-normal.woff2": "/static/media/catamaran-latin-ext-900-normal.a88cf14de0d426572b70.woff2",
+    "static/media/open-sans-greek-ext-500-normal.woff2": "/static/media/open-sans-greek-ext-500-normal.0b93482a2e9e3b353959.woff2",
+    "index.html": "/index.html",
+    "main.e11a5140.css.map": "/static/css/main.e11a5140.css.map",
+    "main.4913b929.js.map": "/static/js/main.4913b929.js.map",
+    "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e11a5140.css",
+    "static/js/main.4913b929.js"
+  ]
+}
